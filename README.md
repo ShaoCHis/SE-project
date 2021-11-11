@@ -1,2 +1,2 @@
 # SE-project
-SE project
+Tongji University Software Engineer Project
