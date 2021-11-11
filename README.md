@@ -46,3 +46,12 @@ back-end---------------------|SpringBoot
 
 部署：centOS7
 ```
+
+### 响应信息示例
+```
+"timestamp": "",        #时间戳
+  "data": {}            #数据
+  "success": true,      #成功与否
+  "message": null,      #提示信息
+  "code": null          #成功为null
+```
