@@ -3,6 +3,12 @@ Tongji University Software Engineer Project
 前端在front-end下提交
 后端在back-end下提交
 
+### 开发环境
+```
+jdk:1.8
+IDE:IDEA
+```
+
 ### 项目结构
 ```
 src-------|main--------|java---------|------controller                     #控制类
@@ -33,6 +39,7 @@ src-------|main--------|java---------|------controller                     #控�
                |-------|testHTTP             #HTTP测试
 ```
 
+### 技术栈
 ```
 front-end--------------------|vue
          |
