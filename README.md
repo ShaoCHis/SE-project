@@ -4,12 +4,11 @@ Tongji University Software Engineer Project
 ## 后端在back-end下提交
 
 ## 开发环境
-Front-end+++++++++++++Vue
-
-            +
-            +
-            
-            ++++++++++ElementUI
+Front-end
++++++++++++++Vue
++
++
+++++++++++ElementUI
             
 Bcak-end++++++++++++++SpringBoot
         +
