@@ -5,7 +5,8 @@ Tongji University Software Engineer Project
 
 ### 项目结构
 ```
-src-------|main
+src-------|main--------|
+   |
    |
    |
    |
