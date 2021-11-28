@@ -1,3 +1,15 @@
 GET localhost:18080/api/tests/getTest/1
 content-type:application-json
 Accept: application/json
+
+###
+
+POST localhost:18080/api/Login/session
+content-type:application/json
+Accept: application/json
+
+{
+  "email": "123444",
+  "password": "654321",
+  "type": 1
+}
