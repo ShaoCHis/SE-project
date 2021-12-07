@@ -41,7 +41,7 @@ Tongji University
           <i class="el-icon-office-building"></i>
           课程名称
         </template>
-        江苏省苏州市吴中区吴中大道 1188 号
+        江苏省苏州市吴中区吴中大道 傻逼傻逼
       </el-descriptions-item>
     </el-descriptions>
   </div>
