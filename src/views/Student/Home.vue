@@ -27,11 +27,11 @@ Tongji University
               <i class="el-icon-menu"></i>
               <span slot="title" style="font-weight: bolder">实验公告</span>
             </el-menu-item>
-            <el-menu-item index="2" @click="openOr" style="font-size: 20px;margin-top: 20px">
+            <el-menu-item index="2" @click="goList" style="font-size: 20px;margin-top: 20px">
               <i class="el-icon-document"></i>
               <span slot="title" style="font-weight: bolder">实验列表</span>
             </el-menu-item>
-            <el-menu-item index="3" @click="openOr" style="font-size: 20px;margin-top: 20px">
+            <el-menu-item index="3" @click=goReport style="font-size: 20px;margin-top: 20px">
               <i class="el-icon-setting"></i>
               <span slot="title" style="font-weight: bolder">实验报告</span>
             </el-menu-item>
@@ -74,6 +74,16 @@ export default {
     goNotice(){
       this.$router.push({
         name:"experimentNotice"
+      })
+    },
+    goList(){
+      this.$router.push({
+        name:"experimentList"
+      })
+    },
+    goReport(){
+      this.$router.push({
+        name:"experimentReport"
       })
     }
   },

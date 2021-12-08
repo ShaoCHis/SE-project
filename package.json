@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
+    "echarts": "^5.2.2",
     "vue": "^2.6.11",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-router": "^3.5.3"
   },
   "devDependencies": {

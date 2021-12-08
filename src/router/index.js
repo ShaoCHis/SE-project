@@ -34,6 +34,16 @@ const routes=[
                 path:'ExperimentNotice',
                 name:"experimentNotice",
                 component:()=>import('../views/Student/ExperimentNotice')
+            },
+            {
+                path:'ExperimentList',
+                name:"experimentList",
+                component:()=>import('../views/Student/ExperimentList')
+            },
+            {
+                path:'ExperimentReport',
+                name:"experimentReport",
+                component:()=>import('../views/Student/ExperimentReport')
             }
         ]
     },

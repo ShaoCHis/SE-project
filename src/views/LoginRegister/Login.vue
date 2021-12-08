@@ -44,7 +44,7 @@ Tongji University
             <div class="form-group" style="display: flex;">
               <div>
                 <el-input ref="identify" style="width:100%" type="text" id="code" v-model="code" class="code"
-                          placeholder="请输入您的验证码"/>
+                          placeholder="请输入您的验证码" @keydown.enter.native="login"/>
               </div>
               <div @click="refreshCode">
                 <!--验证码组件-->

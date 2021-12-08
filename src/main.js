@@ -4,11 +4,12 @@ import router from './router'
 import ElementUI from "element-ui"
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from "axios"
+import infiniteScroll from 'vue-infinite-scroll'
 
 
 axios.defaults.withCredentials = true;
 
-Vue.use(ElementUI)
+Vue.use(ElementUI,infiniteScroll)
 
 Vue.config.productionTip = false
 

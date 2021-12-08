@@ -70,7 +70,7 @@ Tongji University
 
           <!-- 按钮区域 -->
           <el-form-item class="btns">
-            <el-button type="primary" @click="register">激活</el-button>
+            <el-button type="primary" @click="register" @keydown="register">激活</el-button>
             <el-button type="info" @click="resetLoginForm">重置</el-button>
             <el-button type="success" @click="show">帮助</el-button>
           </el-form-item>
