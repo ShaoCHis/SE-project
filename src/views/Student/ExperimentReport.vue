@@ -114,7 +114,7 @@ export default {
       let endDate=new Date(
           +new Date(this.experiments[index].uploadTime) + 8 * 3600 * 1000 + 7 * 24 * 3600 * 1000
       )
-      console.log(nowDate>endDate)
+      console.log(nowDate<endDate)
       if(nowDate>endDate){
         this.$message.error("已超过实验报告提交时间，无法再次进行操作！");
         return

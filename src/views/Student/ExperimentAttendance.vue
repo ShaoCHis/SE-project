@@ -52,10 +52,12 @@ export default {
         if (res.data.success == true) {
           this.$message.success("签到成功！")
           that.dialogVisible=false
+        }else {
+          this.$message.error(res.data.message)
         }
       }).catch((res) => {
         console.log(res);
-        this.$message.error(res.data.message)
+        this.$message.error("Timeout!Please try again!")
       })
     },
     handleClose(done) {
