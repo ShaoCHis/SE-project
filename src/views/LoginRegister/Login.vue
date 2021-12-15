@@ -70,6 +70,7 @@ Tongji University
 
 <script>
 import axios from "axios";
+import {validateEMail, isPassword} from "@/utils/validator";
 import SIdentify from "@/components/identify";
 
 axios.defaults.withCredentials = true;
@@ -84,18 +85,15 @@ export default {
         password: "",
       },
       loginRules: {
-        username: [
-          {required: true, trigger: "change",},
+        email: [
+          {required: true,trigger: "change",validator:validateEMail},
         ],
         password: [
-          {required: true, trigger: "change"},
-          // , validator: isPassword
+          { required: true, trigger: "blur", min: 1, message: "密码不能为空" },
+          {
+            required: true,trigger: "blur",validator:isPassword
+          }
         ],
-      },
-      searchSelect(val) {
-        console.log(val);
-        this.value = val;
-        console.log(this.loginForm);
       },
       identifyCodes: "1234567890",
       identifyCode: "",
@@ -119,12 +117,20 @@ export default {
       }
       let that = this;
       // let url = "106.14.69.227:18080/api/Login/session";
-      let data = {"email": that.loginForm.email, "password": that.loginForm.password, "type": 1};
-      axios.post(`//106.14.69.227:18080/api/Login/session`,data).then((res) => {
+      // let data = {"name": that.loginForm.email, "password": that.loginForm.password};
+      axios.post(`//139.224.65.154:8080/users/login?`+"name="+that.loginForm.email+"&password="+that.loginForm.password).then((res) => {
         if (res.data.success == true) {
-          this.$router.push({
-            name:"studentHome",
-          })
+
+          //后续修改为角色判断字段
+
+          if(res.data.data.roleId==4) {
+            this.$router.push({
+              name: "studentHome",
+              params: {
+                id: res.data.data.specialId
+              }
+            })
+          }
           this.$message.success("Login Success!Welcome!")
         }
         console.log(res)

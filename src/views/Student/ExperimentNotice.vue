@@ -7,207 +7,195 @@ Tongji University
 
 <template>
   <div>
-    <h1 style="font-size: 30px;margin-right: 65%">实验公告</h1>
     <div>
-    <el-table
-        :data="tableData"
-        :row-class-name="tableRowClassName"
-        border
-        height="270"
-        style="width: 100%;font-weight: bolder;font-size: 15px;row-class-name:tableRowClassName">
-      <el-table-column
-          fixed
-          prop="date"
-          label="日期"
-          width="150">
-      </el-table-column>
-      <el-table-column
-          prop="name"
-          label="姓名"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="province"
-          label="省份"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="city"
-          label="市区"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          prop="address"
-          label="地址"
-          width="300">
-      </el-table-column>
-      <el-table-column
-          prop="zip"
-          label="邮编"
-          width="120">
-      </el-table-column>
-      <el-table-column
-          fixed="right"
-          label="操作"
-          width="100">
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+      <h1 style="font-size: 25px;margin-right: 65%">{{courserInfo.name}}</h1>
+      <p style="font-size:20px;margin-right: 60%">{{courserInfo.intro}}</p>
     </div>
-    <h1 style="font-size: 30px;margin-right: 65%">教师公告</h1>
-    <div>
-      <el-table
-          :data="tableData"
-          :row-class-name="newTableRowClassName"
-          border
-          height="270"
-          style="width: 100%;font-weight: bolder;font-size: 15px;row-class-name:newTableRowClassName">
-        <el-table-column
-            fixed
-            prop="date"
-            label="日期"
-            width="150">
-        </el-table-column>
-        <el-table-column
-            prop="name"
-            label="姓名"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="province"
-            label="省份"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="city"
-            label="市区"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="address"
-            label="地址"
-            width="300">
-        </el-table-column>
-        <el-table-column
-            prop="zip"
-            label="邮编"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            fixed="right"
-            label="操作"
-            width="100">
-          <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+    <h2 style="font-size: 25px;margin-right: 65%">实验公告</h2>
+    <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh;width: 100%">
+      <ul
+          class="list"
+          v-infinite-scroll="load"
+          infinite-scroll-disabled="disabled">
+        <li v-for="i in systemNotices" class="list-item" :key=i.noticeId>
+          {{ i.category + "!" + i.title + ":" + i.content }}
+          <br>
+          <span style="font-size: 15px;align:right">{{ i.uploadTime }}</span>
+        </li>
+      </ul>
+      <p v-if="loading">Loading...</p>
+      <p v-if="noMoreSystem">No more</p>
+    </div>
+    <h2 style="font-size: 25px;margin-right: 65%">教师公告</h2>
+    <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh">
+      <ul
+          class="list"
+          v-infinite-scroll="load"
+          infinite-scroll-disabled="disabled">
+        <li v-for="i in classNotices" class="newList-item" :key=i.noticeId>
+          {{ i.category + "!" + i.title + ":" + i.content }}
+          <br>
+          <span style="font-size: 15px;align:right">{{ i.uploadTime }}</span>
+        </li>
+      </ul>
+      <p v-if="loading">Loading...</p>
+      <p v-if="noMoreClass">No more</p>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
 export default {
   name: "ExperimentNotice",
 
+  data() {
+    return {
+      id: "",
+      classId: "",
+      //公告显示的条数
+      classCount: 10,
+      systemCount: 10,
+      //加载状态
+      loading: false,
+      systemNotices: [],
+      classNotices: [],
+      courserInfo:{},
+    }
+  },
+  computed: {
+    noMoreClass() {
+      return this.count >= this.classNotices.length;
+    },
+    disabledClass() {
+      return this.loading || this.noMoreClass
+    },
+    noMoreSystem() {
+      return this.count >= this.systemNotices.length;
+    },
+    disabledSystem() {
+      return this.loading || this.noMoreSystem
+    },
+  },
   methods: {
-    handleClick(row) {
-      console.log(row);
+    load() {
+      this.loading = true
+      setTimeout(() => {
+        this.count += 2
+        this.loading = false
+      }, 2000)
     },
-    tableRowClassName({row, rowIndex}) {
-      if (rowIndex % 2 == 0) {
-        return 'warning-row';
-      } else {
-        console.log(row)
-        return 'success-row';
-      }
+    async getSystemNotices() {
+      let that = this;
+      axios.get(`//139.224.65.154:8080/sysnotices`).then((res) => {
+        if (res.data.success == true) {
+          that.systemNotices = res.data.data;
+        }
+        for (let i in that.systemNotices) {
+          //let delayTime = new Date(experiment.uploadTime).toJSON();
+          that.systemNotices[i].uploadTime = new Date(
+              +new Date(that.systemNotices[i].uploadTime) + 8 * 3600 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     },
-    newTableRowClassName({row, rowIndex}) {
-      if (rowIndex % 2 == 0) {
-        return 'newWarning-row';
-      } else {
-        console.log(row)
-        return 'newSuccess-row';
-      }
+    async getClassNotices() {
+      let that = this;
+      axios.get(`//139.224.65.154:8080/classnotices/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.classNotices = res.data.data;
+        }
+        for (let i in that.classNotices) {
+          //let delayTime = new Date(experiment.uploadTime).toJSON();
+          that.classNotices[i].uploadTime = new Date(
+              +new Date(that.classNotices[i].uploadTime) + 8 * 3600 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+        }
+        console.log(res.data.data)
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getCourse(){
+      let that = this;
+      axios.get(`//139.224.65.154:8080/classes/getcourse/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.courserInfo = res.data.data;
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     }
   },
 
-  data() {
-    return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1517 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1519 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1516 弄',
-        zip: 200333
-      }],
-      currentDate: new Date()
-    }
+  mounted() {
+    this.id = this.$route.params.id;
+    this.classId = this.$route.params.classId;
+    this.getClassNotices();
+    this.getSystemNotices();
+    this.getCourse();
+  },
+  watch: {
+    '$route.params.classId'() {
+      this.classId = this.$route.params.classId;
+      this.getClassNotices()
+      this.getCourse();
+    },
+  },
+  created() {
+    this.id = this.$route.params.id;
+    this.classId = this.$route.params.classId;
+    this.getClassNotices();
+    this.getSystemNotices();
+    this.getCourse();
   }
 }
 </script>
 
 <style>
-.el-table .warning-row {
-  background: #9cc0ff;
+.block {
+  display: inline-block;
 }
 
-.el-table .success-row {
-  background: white;
-}
-.el-table .newWarning-row {
-  background: oldlace;
-}
-
-.el-table .newSuccess-row {
-  background: white;
-}
-.text {
-  font-size: 14px;
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 1px;
 }
 
-.item {
-  margin-bottom: 18px;
+.list-item {
+  list-style: none;
+  padding: 0;
+  margin: 4px;
+  padding: 2px;
+  width: 100%;
+  background-color: #f0f9eb;
+  font-size: 20px;
+  float: left;
 }
-.time {
-  font-size: 13px;
-  color: #999;
-}
-.clearfix:before,
-.clearfix:after {
-  display: table;
-  content: "";
-}
-.clearfix:after {
-  clear: both
-}
-.box-card {
-  width: 480px;
+.newList-item {
+  list-style: none;
+  padding: 0;
+  margin: 4px;
+  padding: 2px;
+  width: 100%;
+  background-color: oldlace;
+  font-size: 25px;
+  float: left;
 }
 </style>

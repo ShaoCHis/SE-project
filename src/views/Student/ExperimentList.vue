@@ -8,55 +8,106 @@ Tongji University
 <template>
   <div>
     <div>
-    <div class="block" style="position: absolute;left: 10%;margin-top: 10%">
-      <span style="font-size: 25px">成绩统计</span>
+      <div class="block" style="position: absolute;left: 20%;margin-top: 10%">
+        <span style="font-size: 25px">成绩统计</span>
+      </div>
+      <div class="block" id="chartLineBox" style="width: 60%;height: 60vh;left: 0%"></div>
     </div>
-    <div class="block" id="chartLineBox" style="width: 60%;height: 60vh;left: 0%"></div>
-    </div>
-    <div class="infinite-list-wrapper" style="overflow:auto;height: 35vh">
-      <ul
-          class="list"
-          v-infinite-scroll="load"
-          infinite-scroll-disabled="disabled">
-        <li v-for="i in count" class="list-item" :key=i>{{ i }}</li>
-      </ul>
-      <p v-if="loading">Loading...</p>
-      <p v-if="noMore">No more</p>
+    <div>
+      <el-table
+          :data="experiments"
+          :row-class-name="tableRowClassName"
+          border
+          height="270"
+          style="width: 100%;font-weight: bolder;font-size: 15px;row-class-name:tableRowClassName">
+        <el-table-column
+            fixed
+            prop="experimentId"
+            label="序号"
+            width="150">
+        </el-table-column>
+        <el-table-column
+            prop="name"
+            label="实验名称"
+            width="170">
+        </el-table-column>
+        <el-table-column
+            prop="uploadTime"
+            label="上传时间"
+            width="250">
+        </el-table-column>
+        <el-table-column
+            fixed="right"
+            label="操作"
+            width="200">
+          <template slot-scope="index">
+            <el-button @click="handleClick(index.$index)" type="text" size="small">查看实验内容</el-button>
+            <el-button type="text" size="small" disabled>编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
+import axios from "axios";
 
 export default {
   name: "ExperimentList",
   data() {
     return {
-      count: 10,
-      loading: false
-    }
-  },
-  computed: {
-    noMore() {
-      return this.count >= 20
-    },
-    disabled() {
-      return this.loading || this.noMore
+      id: "",
+      classId: "",
+      experiments: []
     }
   },
   methods: {
-    load() {
-      this.loading = true
-      setTimeout(() => {
-        this.count += 2
-        this.loading = false
-      }, 2000)
+    tableRowClassName({row, rowIndex}) {
+      if (rowIndex % 2 == 0) {
+        return 'warning-row';
+      } else {
+        console.log(row)
+        return 'success-row';
+      }
+    },
+    handleClick(row) {
+      console.log(row);
+      console.log(this.experiments[row])
+      this.$alert(
+          this.experiments[row].intro,
+          "实验内容",
+          {
+            confirmButtonText: "确定",
+          }
+      )
+    },
+    async getExperiments() {
+      let that = this;
+      axios.get(`//139.224.65.154:8080/reports/getexperimentsofclass/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          console.log(res)
+          that.experiments = res.data.data;
+        }
+        for (let i in that.experiments) {
+          //let delayTime = new Date(experiment.uploadTime).toJSON();
+          that.experiments[i].uploadTime = new Date(
+              +new Date(that.experiments[i].uploadTime) + 8 * 3600 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+          console.log(that.experiments[i].uploadTime)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     }
   },
   mounted() {
     this.chartLine = echarts.init(document.getElementById('chartLineBox'));
-
     // 指定图表的配置项和数据
     let option = {
       tooltip: {              //设置tip提示
@@ -124,27 +175,53 @@ export default {
     // 使用刚指定的配置项和数据显示图表。
     this.chartLine.setOption(option);
   },
+  created() {
+    this.id = this.$route.params.id;
+    this.classId = this.$route.params.classId;
+    this.getExperiments()
+  },
+  watch: {
+    '$route.params.classId'() {
+      this.classId = this.$route.params.classId;
+      this.getExperiments()
+    },
+  },
 }
 </script>
 
 <style scoped>
-.block {
-  display: inline-block;
-}
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 1px;
+.el-table .warning-row {
+  background: #9cc0ff;
 }
 
-.list-item {
-  list-style: none;
-  padding: 0;
-  margin: 4px;
-  padding: 2px;
-  width: 100%;
-  background-color: #f0f9eb;
-  font-size: 25px;
-  float: left;
+.el-table .success-row {
+  background: white;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.time {
+  font-size: 13px;
+  color: #999;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both
+}
+
+.box-card {
+  width: 480px;
 }
 </style>
