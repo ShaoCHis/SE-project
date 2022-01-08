@@ -115,7 +115,7 @@ export default {
       uploadTableVisible: false,
       checkedFiles: [],
       textarea1: '',
-      imageNULL: "http://106.15.6.161:8081/images/ddddffffdefault.jpg",
+      //imageNULL: "http://106.15.6.161:8081/images/ddddffffdefault.jpg",
       permission: window.sessionStorage.getItem("permission"),
       experiment: {
         experimentId: '',
@@ -170,20 +170,6 @@ export default {
       })
     },*/
 
-    //格式化时间
-    formatTime(T) {
-      let date = new Date(T);
-      let Y = date.getFullYear();
-      let M = date.getMonth() + 1;
-      let D = date.getDate();
-      let H = date.getHours();
-      let Min = date.getMinutes();
-      let Sec = date.getSeconds();
-      M = M < 10 ? "0" + M : M;
-      D = D < 10 ? "0" + D : D;
-      return `${Y}-${M}-${D} ${H}:${Min}:${Sec}`;
-    },
-
     //文件上传
     submitUpload() {
       this.$refs.upload.submit()
@@ -229,8 +215,6 @@ export default {
   min-height: calc(100vh - 580px);
 }
 
-.write,
-.thisComment,
 .need {
   -webkit-transform: translateY(-2px) translateX(-2px);
   -ms-transform: translateY(-2px) translateY(-2px);
@@ -259,18 +243,9 @@ export default {
   font-size: 20px;
 }
 
-.comment-bt {
-  height: 33px;
-  width: 100px;
-}
-
 .comment {
   min-height: 500px;
   height: fit-content;
-}
-
-.comment-item {
-  margin: 20px;
 }
 
 .star:hover {
@@ -325,40 +300,4 @@ export default {
   padding-left: 17%;
 }
 
-</style>
-
-<style>
-/** 动画进行时的class **/
-.zoom-enter-active, .zoom-leave-active {
-  transition: all .15s cubic-bezier(0.42, 0, 0.34, 1.55);
-}
-
-/** 设置进场开始的状态和离场结束的状态，都是缩放到0 **/
-.zoom-enter, .zoom-leave-to {
-  transform: scale(0);
-}
-
-/** 设置进场结束的状态和离场开始的状态, 都是缩放到1 **/
-.zoom-enter-to, .zoom-leave {
-  transform: scale(1);
-}
-
-/**上下切换动画**/
-.slide-fade-enter-active {
-  transition: all 0.2s ease;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.2s ease;
-}
-
-.slide-fade-leave-to {
-  transform: translateY(-100%);
-  opacity: 0;
-}
-
-.slide-fade-enter-from {
-  transform: translateY(-100%);
-  opacity: 0;
-}
 </style>
