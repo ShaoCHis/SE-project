@@ -105,18 +105,7 @@ export default {
   padding: 50px 50px 200px 50px
 }
 
-/*走马灯*/
 
-.el-carousel {
-  width: 50%;
-  border-radius: 10px;
-  float: left;
-  margin-left: 30px;
-}
-
-.el-carousel__item {
-  height: 300px;
-}
 
 .el-carousel__item h3 {
   color: #475669;
@@ -125,15 +114,6 @@ export default {
   line-height: 200px;
   margin: 0;
   text-align: center;
-}
-
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
-
-}
-
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
 }
 
 /*公告板*/
@@ -147,9 +127,6 @@ export default {
   border-radius: 10px;
 }
 
-.el-tabs__nav-scroll {
-  padding-left: 60px;
-}
 
 /*新发布的实验*/
 .new_exp {
@@ -179,13 +156,4 @@ export default {
   display: block;
 }
 
-.el-card.newExp:hover{
-  cursor: pointer;
-  -webkit-transform: translateY(-2px) translateX(-2px);
-  -ms-transform: translateY(-2px) translateY(-2px);
-  -webkit-box-shadow: 3px 3px 6px #999;
-  box-shadow: 3px 3px 6px #999;
-  -webkit-transition: all .5s ease-out;
-  transition: all .5s ease-out;
-}
 </style>
