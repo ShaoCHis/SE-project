@@ -3,11 +3,19 @@
     <el-row>
       <!--    公告板-->
       <div class="board">
-        <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="公告一" name="first">公告一</el-tab-pane>
-          <el-tab-pane label="公告二" name="second">公告二</el-tab-pane>
-          <el-tab-pane label="公告三" name="third">公告三</el-tab-pane>
-          <el-tab-pane label="公告四" name="fourth">公告四</el-tab-pane>
+        <el-tabs label="系统公告" v-model="SysactiveName" @tab-click="handleClick1">
+          <el-tab-pane label="系统公告一" name="first">公告一</el-tab-pane>
+          <el-tab-pane label="系统公告二" name="second">公告二</el-tab-pane>
+          <el-tab-pane label="系统公告三" name="third">公告三</el-tab-pane>
+          <el-tab-pane label="系统公告四" name="fourth">公告四</el-tab-pane>
+        </el-tabs>
+      </div>
+      <div class="board">
+        <el-tabs label="教师公告" v-model="TeaactiveName" @tab-click="handleClick2">
+          <el-tab-pane label="教师公告一" name="first">公告一</el-tab-pane>
+          <el-tab-pane label="教师公告二" name="second">公告二</el-tab-pane>
+          <el-tab-pane label="教师公告三" name="third">公告三</el-tab-pane>
+          <el-tab-pane label="教师公告四" name="fourth">公告四</el-tab-pane>
         </el-tabs>
       </div>
     </el-row>
@@ -51,7 +59,8 @@ export default {
     return {
       //公告板
       message1: "公告一",
-      activeName: 'first',
+      SysactiveName: 'first',
+      TeaactiveName:'first',
 
       //新发布的实验
       imgNull:"http://106.15.6.161:8081/images/ddddffffdefault.jpg",
@@ -66,10 +75,12 @@ export default {
     }
   },
   methods: {
-    handleClick (tab, event) {
+    handleClick1 (tab, event) {
       console.log(tab, event)
     },
-
+    handleClick2 (tab, event) {
+      console.log(tab, event)
+    },
     //实验详情
     experimentInformation(experimentId){
       this.$router.push({
