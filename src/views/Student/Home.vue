@@ -1,9 +1,3 @@
-<!--
-author:ShaoCHi
-date: 2021/11/25 6:34 下午
-IDE:WebStorm
-Tongji University
--->
 <template>
   <div style="height: 100%;background: RGBA(0,0,0,0.05)">
     <el-container>

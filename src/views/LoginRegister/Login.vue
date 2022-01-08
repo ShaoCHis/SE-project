@@ -110,34 +110,37 @@ export default {
 
     //根据返回码决定身份进行页面的跳转
     async login() {
-      if(this.code!=this.identifyCode){
-        this.$message.error("验证码错误！请重新输入！")
-        this.refreshCode();
-        return
-      }
-      let that = this;
-      // let url = "106.14.69.227:18080/api/Login/session";
-      // let data = {"name": that.loginForm.email, "password": that.loginForm.password};
-      axios.post(`//139.224.65.154:8080/users/login?`+"name="+that.loginForm.email+"&password="+that.loginForm.password).then((res) => {
-        if (res.data.success == true) {
-
-          //后续修改为角色判断字段
-
-          if(res.data.data.roleId==4) {
-            this.$router.push({
-              name: "studentHome",
-              params: {
-                id: res.data.data.specialId
-              }
-            })
-          }
-          this.$message.success("Login Success!Welcome!")
-        }
-        console.log(res)
-      }).catch((res) => {
-        console.log(res);
-        that.$message.error("Login Failed!Please try again!");
+      this.$router.push({
+        name:"teacherHome"
       })
+      // if(this.code!=this.identifyCode){
+      //   this.$message.error("验证码错误！请重新输入！")
+      //   this.refreshCode();
+      //   return
+      // }
+      // let that = this;
+      // // let url = "106.14.69.227:18080/api/Login/session";
+      // // let data = {"name": that.loginForm.email, "password": that.loginForm.password};
+      // axios.post(`//139.224.65.154:8080/users/login?`+"name="+that.loginForm.email+"&password="+that.loginForm.password).then((res) => {
+      //   if (res.data.success == true) {
+      //
+      //     //后续修改为角色判断字段
+      //
+      //     if(res.data.data.roleId==4) {
+      //       this.$router.push({
+      //         name: "studentHome",
+      //         params: {
+      //           id: res.data.data.specialId
+      //         }
+      //       })
+      //     }
+      //     this.$message.success("Login Success!Welcome!")
+      //   }
+      //   console.log(res)
+      // }).catch((res) => {
+      //   console.log(res);
+      //   that.$message.error("Login Failed!Please try again!");
+      // })
     },
 
     register() {

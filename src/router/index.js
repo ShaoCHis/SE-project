@@ -52,6 +52,70 @@ const routes=[
             }
         ]
     },
+    {
+        path:'/AdminHome',
+        name:'adminHome',
+        component: ()=>import('../views/Administrator/Home'),
+        children:[
+            {
+                path: 'AdminNotice',
+                name: "adminNotice",
+                component:()=>import('../views/Administrator/AdminNotice')
+            },
+            {
+                path:'AdminStu',
+                name:"adminStu",
+                component:()=>import('../views/Administrator/AdminStu')
+            },
+            {
+                path:'AdminTeacher',
+                name:"adminTeacher",
+                component:()=>import('../views/Administrator/AdminTeacher')
+            },
+            {
+                path:'AdminCourse',
+                name:"adminCourse",
+                component:()=>import('../views/Administrator/AdminCourse')
+            },
+            {
+                path:'AdminClass',
+                name:"adminClass",
+                component:()=>import('../views/Administrator/AdminClass')
+            }
+            ]
+    },
+    {
+        path:'TeacherHome',
+        name:'teacherHome',
+        component: ()=>import('../views/teacher/Home'),
+        children:[
+            {
+                path: 'HomePage',
+                name:" homePage",
+                component:()=>import('../views/teacher/HomePage')
+            },
+            {
+                path: 'DoExperimentReport',
+                name: "DoexperimentReport",
+                component:()=>import('../views/teacher/ExperimentReport')
+            },
+            {
+                path: 'ReadReport',
+                name: "readReport",
+                component:()=>import('../views/teacher/ReadReport')
+            },
+            {
+                path: 'ReleaseExperiment',
+                name: "releaseExperiment",
+                component:()=>import('../views/teacher/ReleaseExperiment')
+            },
+            {
+                path:'ExperimentInformation',
+                name:"experimentInformation",
+                compnent:()=>import('../views/teacher/ExperimentInformation')
+            }
+        ]
+    }
 ];
 const router = new VueRouter({
     history: true,
