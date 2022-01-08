@@ -6,10 +6,6 @@
       <div class="out-button">
         <el-dropdown >
                     <span class="el-dropdown-link" style="margin-right: 15px">
-
-<!--                        <el-badge is-dot class="item" :hidden="showDot">-->
-<!--                         <el-avatar :src="imgUrl"></el-avatar>-->
-<!--                        </el-badge>-->
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
           <el-dropdown-menu slot="dropdown">

@@ -53,7 +53,7 @@ const routes=[
         ]
     },
     {
-        path:'/AdminHome',
+        path:'AdminHome',
         name:'adminHome',
         component: ()=>import('../views/Administrator/Home'),
         children:[
@@ -91,7 +91,7 @@ const routes=[
         children:[
             {
                 path: 'HomePage',
-                name:" homePage",
+                name: "homePage",
                 component:()=>import('../views/teacher/HomePage')
             },
             {
@@ -112,7 +112,7 @@ const routes=[
             {
                 path:'ExperimentInformation',
                 name:"experimentInformation",
-                compnent:()=>import('../views/teacher/ExperimentInformation')
+                component:()=>import('../views/teacher/ExperimentInformation')
             }
         ]
     }

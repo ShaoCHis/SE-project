@@ -4,7 +4,7 @@
       <!--    公告板-->
       <div class="board">
         <el-tabs v-model="activeName" @tab-click="handleClick">
-          <el-tab-pane label="公告一" name="first">{{ message1 }}</el-tab-pane>
+          <el-tab-pane label="公告一" name="first">公告一</el-tab-pane>
           <el-tab-pane label="公告二" name="second">公告二</el-tab-pane>
           <el-tab-pane label="公告三" name="third">公告三</el-tab-pane>
           <el-tab-pane label="公告四" name="fourth">公告四</el-tab-pane>
@@ -13,11 +13,11 @@
     </el-row>
     <el-divider></el-divider>
     <el-row class="new_exp" style="color: #409EFF">
-      <el-col :span="24" style="height: fit-content;margin-bottom: 20px" align="center">
+      <el-col :span="24" style="height: fit-content;margin-bottom: 20px">
         <el-card shadow="always" style="width: 200px;color: #409EFF;height: fit-content"> 最近实验</el-card>
       </el-col>
       <!--      最近实验-->
-      <el-col :span="6" align="center" >
+      <el-col :span="6">
         <el-card class="newExp"
                  :body-style="{ padding: '0px'}" style="width: 250px"
                  @click="experimentInformation(exp.experiment_id)">
@@ -53,9 +53,6 @@ export default {
       message1: "公告一",
       activeName: 'first',
 
-      //实验时间
-      //currentDate: ref(new Date()),
-
       //新发布的实验
       imgNull:"http://106.15.6.161:8081/images/ddddffffdefault.jpg",
       exp:{
@@ -67,12 +64,6 @@ export default {
       },
       latestExp: [],
     }
-  },
-  beforeRouteEnter: (to, from, next) => {
-    next(vm => {
-      //进入路由之前拿到数据
-      vm.getLatestExp();
-    })
   },
   methods: {
     handleClick (tab, event) {
@@ -128,7 +119,7 @@ export default {
 }
 
 
-/*新发布的实验*/
+/*最近实验*/
 .new_exp {
   height: 300px;
 }

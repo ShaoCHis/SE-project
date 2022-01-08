@@ -13,7 +13,7 @@
         <el-form-item label="实验名称" prop="experimentName" style="width: 50%">
           <el-input v-model="form.experimentName"></el-input>
         </el-form-item>
-        <el-form-item label="实验截至日期" required>
+        <el-form-item label="实验截止日期" required>
           <el-col :span="11">
             <el-form-item prop="releaseTime">
               <el-date-picker
