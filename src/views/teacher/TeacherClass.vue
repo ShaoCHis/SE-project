@@ -30,7 +30,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!--                        增加学生按钮-->
-            <el-button type="primary" @click="addStudent(scope.row.classId)"
+            <el-button type="primary" @click="showAddStudent(scope.row.classId)"
                        icon="el-icon-edit"></el-button>
             <!--                        删除按钮-->
             <el-button type="primary" @click="removeById(scope.row.classId)"
@@ -85,7 +85,7 @@
       </el-dialog>
 
       <!--        展示class对话框-->
-      <el-dialog title="活动详情" :visible.sync="showDialogVisible"
+      <el-dialog title="班级详情" :visible.sync="showDialogVisible"
                  width="630px" top="60px" center>
         <!--            展示内容主体区域 -->
         <el-form :model="showForm" label-width="150px" style="height:580px">
@@ -120,11 +120,11 @@
       <el-dialog title="学生添加" :visible.sync="addStudent"
                  width="630px" top="60px" center>
         <el-form :model="studentForm"  ref="editFormRef" label-width="150px" style="height:380px">
-          <el-form-item label="班级名称:" prop="name">
-            <el-input style="width: 82%;" v-model="studentForm.name"></el-input>
+          <el-form-item label="班级id:" prop="classid">
+            <el-input style="width: 82%;" v-model="studentForm.classid"></el-input>
           </el-form-item>
-          <el-form-item label="学生ID:" prop="studentID">
-            <el-input style="width: 82%;" v-model="studentForm.studentId"></el-input>
+          <el-form-item label="学生ID:" prop="studentid">
+            <el-input style="width: 82%;" v-model="studentForm.studentid"></el-input>
           </el-form-item>
         </el-form>
 
@@ -211,8 +211,8 @@ export default {
       showForm: {},
       editForm: {},
       studentForm:{
-        name:"",
-        studentId: ""
+        classid:"",
+        studentid: ""
       },
       //添加活动的校验规则
       addFormRules: {
@@ -308,52 +308,32 @@ export default {
       this.showDialogVisible = false;
     },
     //取消修改活动
-    /*cancelEdit()
+    cancelEdit()
     {
       this.editDialogVisible = false;
-      this.$message.info("取消修改班级!");
-    },*/
-    //修改活动页面弹出后,会查询要修改的id所对应活动的内容
-    /*async showEditDialog(classId)
+      this.$message.info("取消添加学生班级!");
+    },
+    showAddStudent(classid)
     {
-      let result = await this.$http.post(this.$api.PrincipalGetOneActivityUrl + "/" + classId);
-      this.editForm = result.data;
-      this.editDialogVisible = true;
-    },*/
-    // async addStudent()
-    // {
-    //   let that = this;
-    //   if(that.isPresent==true)
-    //   {
-    //     axios.post(`//139.224.65.154:8080/takeclass/add?classid=` + that.classId +"&studentid="+that.studentId).then((res) => {
-    //       if (res.data.success == true) {
-    //         this.$message.success("添加成功！")
-    //       }
-    //       this.dialogVisible = false
-    //     }).catch((res) => {
-    //       console.log(res);
-    //       that.$message.error("Time out!Please try again!");
-    //     })
-    //   }
-    // },
-    //实现具体的修改活动操作
-    /*async editClass()
+      this.addStudent = true;
+      this.studentForm.classid=classid;
+      this.studentForm.studentid="";
+    },
+    //添加学生
+    async editClass()
     {
-      this.$refs.editFormRef.validate(
-          async valid =>
-          {
-            if (!valid) return;
-            console.log(this.editForm);
-            await this.$http.post(this.$api.PrincipalUpdateOneActivityUrl + "/" + this.editForm.classId, this.editForm);
-            //关闭对话框
-            this.editDialogVisible = false;
-            //    刷新数据列表
-            this.getClassList();
-            //    提示成功
-            this.$message.success("更新班级成功!");
-          }
-      );
-    },*/
+      let that = this;
+      axios.post("//139.224.65.154:8080/takeclass/add?classid=" + that.studentForm.classid + "&studentid=" + that.addForm.studentid ).then((res) => {
+        //隐藏添加公告对话框
+        this.addStudent= false;
+        if(res.data.success!=true)
+          return this.$message.error('增加失败！');
+        this.$message.info("添加成功!");
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
     //根据ID删除对应信息
     async removeById(classId)
     {
