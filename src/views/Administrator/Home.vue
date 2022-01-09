@@ -6,6 +6,7 @@
       <div class="out-button">
         <el-dropdown >
                     <span class="el-dropdown-link" style="margin-right: 15px">
+
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
           <el-dropdown-menu slot="dropdown">
@@ -37,11 +38,12 @@
             <template slot="title"><i class="el-icon-menu"></i>人员管理</template>
             <el-menu-item index="AdminStu" @click="goStu">学生管理</el-menu-item>
             <el-menu-item index="AdminTeacher" @click="goTeacher">教师管理</el-menu-item>
+            <el-menu-item index="AdminUser" @click="goUser">用户管理</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-s-check"></i>课程管理</template>
             <el-menu-item index="AdminCourse" @click="goCourse">课程管理</el-menu-item>
-            <el-menu-item index="/AdminHome/AdminClass" >班级管理</el-menu-item>
+            <el-menu-item index="AdminClass" @click="goClass">班级管理</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -94,7 +96,7 @@ export default {
     goHome()
     {
       this.$router.push({
-        name: "adminHome",
+        name: "adminHomePage",
       })
     },
     goNotice()
@@ -125,6 +127,12 @@ export default {
     {
       this.$router.push({
         name:"adminClass",
+      })
+    },
+    goUser()
+    {
+      this.$router.push({
+            name:"adminUser",
       })
     }
   }

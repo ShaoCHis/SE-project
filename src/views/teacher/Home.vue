@@ -37,6 +37,15 @@
             <template slot="title"><i class="el-icon-s-check"></i>成绩管理</template>
             <el-menu-item index="ExperimentReport" @click="goExReport">实验报告批改</el-menu-item>
           </el-submenu>
+          <el-submenu index="3">
+            <template slot="title"><i class="el-icon-s-check"></i>公告管理</template>
+            <el-menu-item index="ExperimentReport" @click="goTeacherNotice">教师公告发布</el-menu-item>
+          </el-submenu>
+          <el-submenu index="4">
+            <template slot="title"><i class="el-icon-s-check"></i>课程管理</template>
+            <el-menu-item index="TeacherCourse" @click="goTeacherCourse">课程创建</el-menu-item>
+            <el-menu-item index="TeacherClass" @click="goTeacherClass">班级创建</el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <!--            右侧内容主体-->
@@ -96,6 +105,24 @@ export default {
     {
       this.$router.push({
         name:"DoexperimentReport",
+      })
+    },
+    goTeacherNotice()
+    {
+      this.$router.push({
+        name:"teacherNotice",
+      })
+    },
+    goTeacherCourse()
+    {
+      this.$router.push({
+        name:"teacherCourse",
+      })
+    },
+    goTeacherClass()
+    {
+      this.$router.push({
+        name:"teacherClass",
       })
     }
   }

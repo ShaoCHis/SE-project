@@ -81,6 +81,16 @@ const routes=[
                 path:'AdminClass',
                 name:"adminClass",
                 component:()=>import('../views/Administrator/AdminClass')
+            },
+            {
+                path:'AdminHomePage',
+                name:"adminHomePage",
+                component:()=>import('../views/Administrator/AdminHomePage')
+            },
+            {
+                path:'AdminUser',
+                name:"adminUser",
+                component:()=>import('../views/Administrator/AdminUser')
             }
             ]
     },
@@ -113,6 +123,21 @@ const routes=[
                 path:'ExperimentInformation',
                 name:"experimentInformation",
                 component:()=>import('../views/teacher/ExperimentInformation')
+            },
+            {
+                path:'TeacherNotice',
+                name:"teacherNotice",
+                component:()=>import('../views/teacher/TeacherNotice')
+            },
+            {
+                path:'TeacherClass',
+                name:"teacherClass",
+                component:()=>import('../views/teacher/TeacherClass')
+            },
+            {
+                path:'TeacherCourse',
+                name:"teacherCourse",
+                component:()=>import('../views/teacher/TeacherCourse')
             }
         ]
     }

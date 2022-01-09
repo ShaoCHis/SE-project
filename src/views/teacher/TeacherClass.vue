@@ -3,25 +3,25 @@
     <!--        面包屑-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/AdminHome' }">管理员首页</el-breadcrumb-item>
-      <el-breadcrumb-item>课程管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
+      <el-breadcrumb-item>班级管理</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-divider></el-divider>
     <!--        卡片-->
     <el-card class="box-card">
-      <!--        添加-->
+      <!--            搜索与添加-->
       <el-row :gutter="20">
         <el-col :span="4">
-          <el-button type="primary" @click="showAddCourse">添加课程</el-button>
+          <el-button type="primary" @click="showAddClass">创建班级</el-button>
         </el-col>
       </el-row>
-      <!--            课程列表 只展示一些信息,详细信息可在详情查看-->
-      <el-table :data="courseList">
+      <!--            class列表 只展示一些信息,详细信息可在详情查看-->
+      <el-table :data="classList">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="课程ID" prop="courseId"></el-table-column>
-        <el-table-column label="课程名称" prop="coursename"></el-table-column>
-        <el-table-column label="管理员ID" prop="administratorid"></el-table-column>
+        <el-table-column label="课程ID" prop="courseid"></el-table-column>
+        <el-table-column label="班级教室" prop="room"></el-table-column>
+        <el-table-column label="教师ID" prop="teacherid"></el-table-column>
         <el-table-column label="显示详情">
           <template slot-scope="scope">
             <el-button type="primary" @click="showDialog(scope.row)">查看</el-button>
@@ -29,60 +29,68 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <!--                        修改按钮-->
-<!--            <el-button type="primary" @click="showEditDialog(scope.row.courseId)"
-                       icon="el-icon-edit"></el-button>-->
+            <!--                        增加学生按钮-->
+            <el-button type="primary" @click="addStudent(scope.row.classid)"
+                       icon="el-icon-edit"></el-button>
             <!--                        删除按钮-->
-            <el-button type="primary" @click="removeById(scope.row)"
+            <el-button type="primary" @click="removeById(scope.row.classid)"
                        icon="el-icon-delete"></el-button>
 
           </template>
         </el-table-column>
       </el-table>
 
-      <!--        添加课程对话框-->
-      <el-dialog title="添加课程" :visible.sync="addDialogVisible"
+      <!--        添加class对话框-->
+      <el-dialog title="创建班级" :visible.sync="addDialogVisible"
                  width="630px" top="60px" center>
         <!--            内容主体区域 放置一个表单-->
         <!--绑定到addForm中，绑定验证规则对象addFormRules 表单校验项的引用为addFormRef-->
         <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="150px"
                  style="height:385px">
           <!-- prop属性指定验证规则-->
-          <el-form-item label="课程名称:" prop="coursename">
+          <el-form-item label="上课周数:" prop="week">
+            <el-input style="width: 82%;" v-model="addForm.week"></el-input>
+          </el-form-item>
+          <el-form-item label="开始时间:" prop="starttime">
             <!--v-model双向绑定-->
-            <el-input style="width: 82%;" v-model="addForm.coursename"></el-input>
+            <el-input style="width: 82%;" v-model="addForm.starttime"></el-input>
           </el-form-item>
-          <el-form-item label="课程介绍:" prop="intro">
-            <el-input style="width: 82%;" type="textarea"
-                      :autosize="{ minRows: 3, maxRows: 4}" v-model="addForm.intro"></el-input>
+          <el-form-item label="结束时间:" prop="endtime">
+            <el-input style="width: 82%;" v-model="addForm.endtime"></el-input>
           </el-form-item>
-          <el-form-item label="管理员Id:" prop="administratorid">
-            <el-input style="width: 82%;" v-model="addForm.administratorid"></el-input>
+          <el-form-item label="上课教室:" prop="room">
+            <el-input style="width: 82%;" v-model="addForm.room"></el-input>
+          </el-form-item>
+          <el-form-item label="课程id:" prop="courseid">
+            <el-input style="width: 82%;" v-model="addForm.courseid"></el-input>
+          </el-form-item>
+          <el-form-item label="教师id:" prop="teacherid">
+            <el-input style="width: 82%;" v-model="addForm.teacherid"></el-input>
           </el-form-item>
         </el-form>
         <!--            底部区域-->
         <span slot="footer" class="dialog-footer">
                 <el-button style="margin-right:20px" @click="cancelAdd">取 消</el-button>
-                <el-button style="margin-left:20px" type="primary" @click="addCourse">确 定</el-button>
+                <el-button style="margin-left:20px" type="primary" @click="addClass">确 定</el-button>
             </span>
       </el-dialog>
 
-      <!--        展示课程对话框-->
-      <el-dialog title="课程详情" :visible.sync="showDialogVisible"
+      <!--        展示class对话框-->
+      <el-dialog title="活动详情" :visible.sync="showDialogVisible"
                  width="630px" top="60px" center>
         <!--            展示内容主体区域 -->
         <el-form :model="showForm" label-width="150px" style="height:580px">
-          <el-form-item label="课程名称:">
-            <el-input style="width: 82%;" v-model="showForm.coursename" readonly="true"></el-input>
+          <el-form-item label="班级名称:">
+            <el-input style="width: 82%;" v-model="showForm.name" readonly="true"></el-input>
           </el-form-item>
-          <el-form-item label="课程介绍:">
+          <el-form-item label="班级介绍:">
             <el-input type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}" style="width: 82%;"
-                      v-model="showForm.intro"
+                      v-model="showForm.description"
                       readonly="true"></el-input>
           </el-form-item>
-          <el-form-item label="责任教师:">
-            <el-input style="width: 82%;" v-model="showForm.administratorid" readonly="true"></el-input>
+          <el-form-item label="任课教师:">
+            <el-input style="width: 82%;" v-model="showForm.teacher" readonly="true"></el-input>
           </el-form-item>
 
 
@@ -93,27 +101,44 @@
             </span>
       </el-dialog>
 
-      <!--        修改课程对话框-->
-<!--      <el-dialog title="修改课程" :visible.sync="editDialogVisible"
+      <!--        添加学生对话框-->
+      <el-dialog title="学生添加" :visible.sync="addStudent"
+                 width="630px" top="60px" center>
+        <el-form :model="studentForm"  ref="editFormRef" label-width="150px" style="height:380px">
+          <el-form-item label="班级名称:" prop="name">
+            <el-input style="width: 82%;" v-model="studentForm.name"></el-input>
+          </el-form-item>
+          <el-form-item label="学生ID:" prop="studentID">
+            <el-input style="width: 82%;" v-model="studentForm.studentId"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+                    <el-button style="margin-right:20px" @click="cancelEdit">取 消</el-button>
+                    <el-button style="margin-left:20px" type="primary" @click="editClass">确 定</el-button>
+            </span>
+      </el-dialog>
+      <!--        修改班级对话框-->
+      <el-dialog title="班级更改" :visible.sync="editDialogVisible"
                  width="630px" top="60px" center>
         <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="150px" style="height:380px">
-          <el-form-item label="课程名称:" prop="name">
+          <el-form-item label="班级名称:" prop="name">
             <el-input style="width: 82%;" v-model="editForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="课程介绍:" prop="description">
+          <el-form-item label="班级介绍:" prop="description">
             <el-input style="width: 82%;" type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}" v-model="editForm.description"></el-input>
           </el-form-item>
-          <el-form-item label="责任教师:" prop="teacher">
+          <el-form-item label="任课教师:" prop="teacher">
             <el-input style="width: 82%;" v-model="editForm.teacher"></el-input>
           </el-form-item>
         </el-form>
 
         <span slot="footer" class="dialog-footer">
                     <el-button style="margin-right:20px" @click="cancelEdit">取 消</el-button>
-                    <el-button style="margin-left:20px" type="primary" @click="editCourse">确 定</el-button>
+                    <el-button style="margin-left:20px" type="primary" @click="editClass">确 定</el-button>
             </span>
-      </el-dialog>-->
+      </el-dialog>
       <br>
       <!--            分页区域-->
       <el-pagination
@@ -130,6 +155,7 @@
 </template>
 
 <script>
+
 import axios from "axios";
 
 export default {
@@ -138,7 +164,7 @@ export default {
     return {
       //获取活动列表参数对象
       //查询到的当页活动
-      courseList: [],
+      classList: [],
 
       query: '',
       //当前的页码
@@ -152,43 +178,42 @@ export default {
       addDialogVisible: false,
       editDialogVisible: false,
       showDialogVisible: false,
+      addStudent: false,
+
 
       //添加活动表单数据
       addForm: {
-        coursename: "",
-        intro: "",
-        administratorid: ""
+        week:"",
+        starttime: "",
+        endtime: "",
+        room: "",
+        courseid:"",
+        teacherid:""
       },
       showForm: {},
       editForm: {},
+      studentForm:{
+        name:"",
+        studentId: ""
+      },
       //添加活动的校验规则
       addFormRules: {
-        coursename: [
-          {required: true, message: '请输入课程名称', trigger: 'blur'},
-          {min: 2, max: 10, message: '课程名称必须在2-10字符之间', trigger: 'blur'}
-        ],
-        intro: [
-          {required: true, message: '请输入课程描述', trigger: 'blur'}
-        ],
-        administratorid: [
-          {required: true, message: '请输入管理员ID', trigger: 'blur'}]
       }
     };
   },
   //一开始就显示活动列表
   created()
   {
-    this.getCourseList();
+    this.getClassList();
   },
   methods: {
-    //获取活动列表
-    async getCourseList()
-    {
+    //获取列表
+    async getClassList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/courses`).then((res) => {
+      axios.get(`//139.224.65.154:8080/classes`).then((res) => {
         if (res.data.success == true) {
           console.log(res)
-          that.courseList=res.data.data
+          that.ClassList=res.data.data
         }
       }).catch((res) => {
         console.log(res);
@@ -208,7 +233,7 @@ export default {
       this.getCourseList();
     },
     //添加活动
-    showAddCourse()
+    showAddClass()
     {
       this.addDialogVisible = true;
       //清空表单的校验项
@@ -217,22 +242,22 @@ export default {
         this.$refs.addFormRef.resetFields();
       });
 
-      this.addForm.coursename = "";
-      this.addForm.intro = "";
-      this.addForm.administratorid = "";
+      this.addForm.name = "";
+      this.addForm.description = "";
+      this.addForm.teacher = "";
     },
-    //点击确定按钮后,添加课程
-    addCourse()
+    //点击确定按钮后,添加class
+    addClass()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + that.addForm.administratorid ).then((res) => {
+      axios.post("//139.224.65.154:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
-        this.getCourseList();
+        this.getClassList();
         console.log(res);
         if(res.data.success!=true)
           return this.$message.error('增加失败！');
-        this.$message.info("添加成功!");
+        this.$message.info("添加班级成功!");
       }).catch((res) => {
         console.log(res);
         that.$message.error("Time out!Please try again!");
@@ -243,13 +268,12 @@ export default {
     {
       //隐藏添加活动对话框
       this.addDialogVisible = false;
-      this.$message.info("取消添加课程!");
+      this.$message.info("取消添加班级!");
     },
 
-    //根据活动ID,展示活动具体信息
+    //根据班级ID,展示活动具体信息
     async showDialog(data)
     {
-      console.log(data);
       this.showForm = data;
       this.showDialogVisible = true;
 
@@ -260,41 +284,57 @@ export default {
       this.showDialogVisible = false;
     },
     //取消修改活动
-    cancelEdit()
+    /*cancelEdit()
     {
       this.editDialogVisible = false;
-      this.$message.info("取消修改课程!");
-    },
+      this.$message.info("取消修改班级!");
+    },*/
     //修改活动页面弹出后,会查询要修改的id所对应活动的内容
-    /*async showEditDialog(courseId)
+    /*async showEditDialog(classId)
     {
-      let result = await this.$http.post(this.$api.PrincipalGetOneActivityUrl + "/" + courseId);
+      let result = await this.$http.post(this.$api.PrincipalGetOneActivityUrl + "/" + classId);
       this.editForm = result.data;
       this.editDialogVisible = true;
     },*/
+    // async addStudent()
+    // {
+    //   let that = this;
+    //   if(that.isPresent==true)
+    //   {
+    //     axios.post(`//139.224.65.154:8080/takeclass/add?classid=` + that.classId +"&studentid="+that.studentId).then((res) => {
+    //       if (res.data.success == true) {
+    //         this.$message.success("添加成功！")
+    //       }
+    //       this.dialogVisible = false
+    //     }).catch((res) => {
+    //       console.log(res);
+    //       that.$message.error("Time out!Please try again!");
+    //     })
+    //   }
+    // },
     //实现具体的修改活动操作
-    /*async editCourse()
+    /*async editClass()
     {
       this.$refs.editFormRef.validate(
           async valid =>
           {
             if (!valid) return;
             console.log(this.editForm);
-            await this.$http.post(this.$api.PrincipalUpdateOneActivityUrl + "/" + this.editForm.courseId, this.editForm);
+            await this.$http.post(this.$api.PrincipalUpdateOneActivityUrl + "/" + this.editForm.classId, this.editForm);
             //关闭对话框
             this.editDialogVisible = false;
             //    刷新数据列表
-            this.getCourseList();
+            this.getClassList();
             //    提示成功
-            this.$message.success("更新课程成功!");
+            this.$message.success("更新班级成功!");
           }
       );
     },*/
     //根据ID删除对应信息
-    async removeById(courseId)
+    async removeById(classId)
     {
       //    弹框提示
-      let confirmResult = await this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
+      let confirmResult = await this.$confirm('此操作将永久删除该班级, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -305,11 +345,11 @@ export default {
         return this.$message.info("已经取消删除");
       } else
       {
-        await axios.delete("//139.224.65.154:8080/courses" + "/" + courseId).then((res)=>{
+        await axios.delete("//139.224.65.154:8080/classes" + "/" + classId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");
-        this.getCourseList();
+        this.getClassList();
       }
     }
   }

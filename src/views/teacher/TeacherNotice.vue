@@ -1,12 +1,6 @@
 <template>
   <div>
-    <!--        面包屑-->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/AdminHome' }">管理员首页</el-breadcrumb-item>
-      <el-breadcrumb-item>系统公告管理</el-breadcrumb-item>
-    </el-breadcrumb>
 
-    <el-divider></el-divider>
     <!--        卡片-->
     <el-card class="box-card">
       <!--  添加-->
@@ -27,10 +21,6 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <!--                        修改按钮-->
-<!--            <el-button type="primary" @click="showEditDialog(scope.row.AnnouncementId)"
-                       icon="el-icon-edit"></el-button>-->
-            <!--                        删除按钮-->
             <el-button type="primary" @click="removeById(scope.row.noticeId)"
                        icon="el-icon-delete"></el-button>
 
@@ -89,6 +79,9 @@
               v-model="addForm.content" style="width: 82%;">
           </el-input>
         </el-form-item>
+        <el-form-item label="班级id:" prop="classid">
+          <el-input v-model="addForm.classid" style="width: 82%;"></el-input>
+        </el-form-item>
       </el-form>
       <!--            底部区域-->
       <span slot="footer" class="dialog-footer">
@@ -97,27 +90,27 @@
   </span>
     </el-dialog>
 
-<!--    &lt;!&ndash;        修改公告对话框&ndash;&gt;
-    <el-dialog title="修改公告" :visible.sync="editDialogVisible"
-               width="50%" center>
-      <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="150px">
-        <el-form-item label="公告标题:" prop="title">
-          <el-input v-model="addForm.title" style="width: 82%;"></el-input>
-        </el-form-item>
-        <el-form-item label="公告内容:" prop="content">
-          <el-input
-              type="textarea"
-              :rows="7"
-              v-model="addForm.content" style="width: 82%;">
-          </el-input>
-        </el-form-item>
-      </el-form>
+    <!--    &lt;!&ndash;        修改公告对话框&ndash;&gt;
+        <el-dialog title="修改公告" :visible.sync="editDialogVisible"
+                   width="50%" center>
+          <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="150px">
+            <el-form-item label="公告标题:" prop="title">
+              <el-input v-model="addForm.title" style="width: 82%;"></el-input>
+            </el-form-item>
+            <el-form-item label="公告内容:" prop="content">
+              <el-input
+                  type="textarea"
+                  :rows="7"
+                  v-model="addForm.content" style="width: 82%;">
+              </el-input>
+            </el-form-item>
+          </el-form>
 
-      <span slot="footer" class="dialog-footer">
-                    <el-button @click="cancelEdit" style="margin-right: 20px;">取 消</el-button>
-                    <el-button type="primary" @click="editAnnouncement">确 定</el-button>
-            </span>
-    </el-dialog>-->
+          <span slot="footer" class="dialog-footer">
+                        <el-button @click="cancelEdit" style="margin-right: 20px;">取 消</el-button>
+                        <el-button type="primary" @click="editAnnouncement">确 定</el-button>
+                </span>
+        </el-dialog>-->
   </div>
 </template>
 
@@ -148,6 +141,7 @@ export default {
         category:"",
         title: "",
         content: "",
+        classid:"",
       },
       //添加公告的校验规则
       addFormRules: {}
@@ -159,16 +153,16 @@ export default {
   },
   methods: {
     async getAnnouncementList() {
-        let that = this;
-        axios.get(`//139.224.65.154:8080/sysnotices`).then((res) => {
-          if (res.data.success == true) {
-            console.log(res);
-            that.AnnouncementList=res.data.data;
-          }
-        }).catch((res) => {
-          console.log(res);
-          that.$message.error("Time out!Please try again!");
-        })
+      let that = this;
+      axios.get(`//139.224.65.154:8080/classnotices`).then((res) => {
+        if (res.data.success == true) {
+          console.log(res)
+          that.AnnouncementList=res.data.data
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     },
     //监听pageSize改变的事件
     handleSizeChange(newSize) {
@@ -192,22 +186,23 @@ export default {
       this.addForm.category="";
       this.addForm.title = "";
       this.addForm.content = "";
+      this.addForm.classid="";
     },
 
     //点击确定按钮后,添加公告
     addAnnouncement() {
       let that = this;
-        axios.post("//139.224.65.154:8080/sysnotices/add?category=" + that.addForm.category + "&title=" + that.addForm.title + "&content=" + that.addForm.content ).then((res) => {
-          //隐藏添加公告对话框
-          this.addDialogVisible = false;
-          this.getAnnouncementList();
-          if(res.data.success!=true)
-            return this.$message.error('增加失败！');
-          this.$message.info("添加公告成功!");
-        }).catch((res) => {
-          console.log(res);
-          that.$message.error("Time out!Please try again!");
-        })
+      axios.post("//139.224.65.154:8080/classnotices/add?category=" + that.addForm.category + "&title=" + that.addForm.title + "&content=" + that.addForm.content + "&classid=" + that.addForm.classid).then((res) => {
+        //隐藏添加公告对话框
+        this.addDialogVisible = false;
+        this.getAnnouncementList();
+        if(res.data.success!=true)
+          return this.$message.error('增加失败！');
+        this.$message.info("添加公告成功!");
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     },
     //添加公告框里面的取消添加公告按钮触发的事件
     cancelAdd() {
@@ -248,7 +243,7 @@ export default {
       if (confirmResult !== "confirm") {
         return this.$message.info("已经取消删除");
       }else {
-        await axios.delete("//139.224.65.154:8080/sysnotices" + "/" + noticeId).then((res)=>{
+        await axios.delete("//139.224.65.154:8080/classnotices" + "/" + noticeId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

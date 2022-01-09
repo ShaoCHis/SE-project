@@ -3,7 +3,7 @@
     <!--        面包屑-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/AdminHome' }">管理员首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
       <el-breadcrumb-item>课程管理</el-breadcrumb-item>
     </el-breadcrumb>
 
@@ -19,9 +19,8 @@
       <!--            课程列表 只展示一些信息,详细信息可在详情查看-->
       <el-table :data="courseList">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="课程ID" prop="courseId"></el-table-column>
-        <el-table-column label="课程名称" prop="coursename"></el-table-column>
-        <el-table-column label="管理员ID" prop="administratorid"></el-table-column>
+        <el-table-column label="课程名称" prop="name"></el-table-column>
+        <el-table-column label="课程简介" prop="intro"></el-table-column>
         <el-table-column label="显示详情">
           <template slot-scope="scope">
             <el-button type="primary" @click="showDialog(scope.row)">查看</el-button>
@@ -30,10 +29,10 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!--                        修改按钮-->
-<!--            <el-button type="primary" @click="showEditDialog(scope.row.courseId)"
-                       icon="el-icon-edit"></el-button>-->
+            <!--            <el-button type="primary" @click="showEditDialog(scope.row.courseId)"
+                                   icon="el-icon-edit"></el-button>-->
             <!--                        删除按钮-->
-            <el-button type="primary" @click="removeById(scope.row)"
+            <el-button type="primary" @click="removeById(scope.row.course_id)"
                        icon="el-icon-delete"></el-button>
 
           </template>
@@ -48,16 +47,13 @@
         <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="150px"
                  style="height:385px">
           <!-- prop属性指定验证规则-->
-          <el-form-item label="课程名称:" prop="coursename">
+          <el-form-item label="课程名称:" prop="name">
             <!--v-model双向绑定-->
             <el-input style="width: 82%;" v-model="addForm.coursename"></el-input>
           </el-form-item>
           <el-form-item label="课程介绍:" prop="intro">
             <el-input style="width: 82%;" type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}" v-model="addForm.intro"></el-input>
-          </el-form-item>
-          <el-form-item label="管理员Id:" prop="administratorid">
-            <el-input style="width: 82%;" v-model="addForm.administratorid"></el-input>
           </el-form-item>
         </el-form>
         <!--            底部区域-->
@@ -73,7 +69,7 @@
         <!--            展示内容主体区域 -->
         <el-form :model="showForm" label-width="150px" style="height:580px">
           <el-form-item label="课程名称:">
-            <el-input style="width: 82%;" v-model="showForm.coursename" readonly="true"></el-input>
+            <el-input style="width: 82%;" v-model="showForm.name" readonly="true"></el-input>
           </el-form-item>
           <el-form-item label="课程介绍:">
             <el-input type="textarea"
@@ -81,8 +77,8 @@
                       v-model="showForm.intro"
                       readonly="true"></el-input>
           </el-form-item>
-          <el-form-item label="责任教师:">
-            <el-input style="width: 82%;" v-model="showForm.administratorid" readonly="true"></el-input>
+          <el-form-item label="课程id:">
+            <el-input style="width: 82%;" v-model="showForm.course_id" readonly="true"></el-input>
           </el-form-item>
 
 
@@ -94,26 +90,26 @@
       </el-dialog>
 
       <!--        修改课程对话框-->
-<!--      <el-dialog title="修改课程" :visible.sync="editDialogVisible"
-                 width="630px" top="60px" center>
-        <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="150px" style="height:380px">
-          <el-form-item label="课程名称:" prop="name">
-            <el-input style="width: 82%;" v-model="editForm.name"></el-input>
-          </el-form-item>
-          <el-form-item label="课程介绍:" prop="description">
-            <el-input style="width: 82%;" type="textarea"
-                      :autosize="{ minRows: 3, maxRows: 4}" v-model="editForm.description"></el-input>
-          </el-form-item>
-          <el-form-item label="责任教师:" prop="teacher">
-            <el-input style="width: 82%;" v-model="editForm.teacher"></el-input>
-          </el-form-item>
-        </el-form>
+      <!--      <el-dialog title="修改课程" :visible.sync="editDialogVisible"
+                       width="630px" top="60px" center>
+              <el-form :model="editForm" :rules="addFormRules" ref="editFormRef" label-width="150px" style="height:380px">
+                <el-form-item label="课程名称:" prop="name">
+                  <el-input style="width: 82%;" v-model="editForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="课程介绍:" prop="description">
+                  <el-input style="width: 82%;" type="textarea"
+                            :autosize="{ minRows: 3, maxRows: 4}" v-model="editForm.description"></el-input>
+                </el-form-item>
+                <el-form-item label="责任教师:" prop="teacher">
+                  <el-input style="width: 82%;" v-model="editForm.teacher"></el-input>
+                </el-form-item>
+              </el-form>
 
-        <span slot="footer" class="dialog-footer">
-                    <el-button style="margin-right:20px" @click="cancelEdit">取 消</el-button>
-                    <el-button style="margin-left:20px" type="primary" @click="editCourse">确 定</el-button>
-            </span>
-      </el-dialog>-->
+              <span slot="footer" class="dialog-footer">
+                          <el-button style="margin-right:20px" @click="cancelEdit">取 消</el-button>
+                          <el-button style="margin-left:20px" type="primary" @click="editCourse">确 定</el-button>
+                  </span>
+            </el-dialog>-->
       <br>
       <!--            分页区域-->
       <el-pagination
@@ -169,9 +165,7 @@ export default {
         ],
         intro: [
           {required: true, message: '请输入课程描述', trigger: 'blur'}
-        ],
-        administratorid: [
-          {required: true, message: '请输入管理员ID', trigger: 'blur'}]
+        ]
       }
     };
   },
@@ -219,13 +213,12 @@ export default {
 
       this.addForm.coursename = "";
       this.addForm.intro = "";
-      this.addForm.administratorid = "";
     },
     //点击确定按钮后,添加课程
     addCourse()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + that.addForm.administratorid ).then((res) => {
+      axios.post("//139.224.65.154:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + 2 ).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getCourseList();
@@ -291,7 +284,7 @@ export default {
       );
     },*/
     //根据ID删除对应信息
-    async removeById(courseId)
+    async removeById(course_id)
     {
       //    弹框提示
       let confirmResult = await this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
@@ -305,7 +298,7 @@ export default {
         return this.$message.info("已经取消删除");
       } else
       {
-        await axios.delete("//139.224.65.154:8080/courses" + "/" + courseId).then((res)=>{
+        await axios.delete("//139.224.65.154:8080/courses" + "/" + course_id).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

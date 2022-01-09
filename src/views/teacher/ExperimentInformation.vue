@@ -157,7 +157,7 @@ export default {
     next(vm => {
       vm.experiment.experimentId = vm.$route.query.experimentId
       //vm.getExperiment()
-      vm.getComment()
+      //vm.getComment()
       vm.downloadFile()
     })
   },
