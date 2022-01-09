@@ -19,9 +19,9 @@
       <!--            class列表 只展示一些信息,详细信息可在详情查看-->
       <el-table :data="classList">
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="课程ID" prop="courseid"></el-table-column>
+        <el-table-column label="班级id" prop="classId"></el-table-column>
         <el-table-column label="班级教室" prop="room"></el-table-column>
-        <el-table-column label="教师ID" prop="teacherid"></el-table-column>
+        <el-table-column label="上课周数" prop="week"></el-table-column>
         <el-table-column label="显示详情">
           <template slot-scope="scope">
             <el-button type="primary" @click="showDialog(scope.row)">查看</el-button>
@@ -30,10 +30,10 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!--                        增加学生按钮-->
-            <el-button type="primary" @click="addStudent(scope.row.classid)"
+            <el-button type="primary" @click="addStudent(scope.row.classId)"
                        icon="el-icon-edit"></el-button>
             <!--                        删除按钮-->
-            <el-button type="primary" @click="removeById(scope.row.classid)"
+            <el-button type="primary" @click="removeById(scope.row.classId)"
                        icon="el-icon-delete"></el-button>
 
           </template>
@@ -67,6 +67,15 @@
           <el-form-item label="教师id:" prop="teacherid">
             <el-input style="width: 82%;" v-model="addForm.teacherid"></el-input>
           </el-form-item>
+          <el-form-item label="报告占比:" prop="reportrate">
+            <el-input style="width: 82%;" v-model="addForm.reportrate"></el-input>
+          </el-form-item>
+          <el-form-item label="考勤占比:" prop="attendrate">
+            <el-input style="width: 82%;" v-model="addForm.attendrate"></el-input>
+          </el-form-item>
+          <el-form-item label="对抗练习占比:" prop="cprate">
+            <el-input style="width: 82%;" v-model="addForm.cprate"></el-input>
+          </el-form-item>
         </el-form>
         <!--            底部区域-->
         <span slot="footer" class="dialog-footer">
@@ -80,19 +89,25 @@
                  width="630px" top="60px" center>
         <!--            展示内容主体区域 -->
         <el-form :model="showForm" label-width="150px" style="height:580px">
-          <el-form-item label="班级名称:">
-            <el-input style="width: 82%;" v-model="showForm.name" readonly="true"></el-input>
+          <el-form-item label="上课周数:" prop="week">
+            <el-input style="width: 82%;" v-model="showForm.week"></el-input>
           </el-form-item>
-          <el-form-item label="班级介绍:">
-            <el-input type="textarea"
-                      :autosize="{ minRows: 3, maxRows: 4}" style="width: 82%;"
-                      v-model="showForm.description"
-                      readonly="true"></el-input>
+          <el-form-item label="开始时间:" prop="startTime">
+            <!--v-model双向绑定-->
+            <el-input style="width: 82%;" v-model="showForm.startTime"></el-input>
           </el-form-item>
-          <el-form-item label="任课教师:">
-            <el-input style="width: 82%;" v-model="showForm.teacher" readonly="true"></el-input>
+          <el-form-item label="结束时间:" prop="endTime">
+            <el-input style="width: 82%;" v-model="showForm.endTime"></el-input>
           </el-form-item>
-
+          <el-form-item label="上课教室:" prop="room">
+            <el-input style="width: 82%;" v-model="showForm.room"></el-input>
+          </el-form-item>
+          <el-form-item label="报告占比:" prop="reportRate">
+            <el-input style="width: 82%;" v-model="showForm.reportRate"></el-input>
+          </el-form-item>
+          <el-form-item label="考勤占比:" prop="attendRate">
+            <el-input style="width: 82%;" v-model="showForm.attendRate"></el-input>
+          </el-form-item>
 
         </el-form>
         <!--                底部区域-->
@@ -188,7 +203,10 @@ export default {
         endtime: "",
         room: "",
         courseid:"",
-        teacherid:""
+        teacherid:"",
+        reportrate:"",
+        attendrate:"",
+        cprate:"",
       },
       showForm: {},
       editForm: {},
@@ -213,7 +231,7 @@ export default {
       axios.get(`//139.224.65.154:8080/classes`).then((res) => {
         if (res.data.success == true) {
           console.log(res)
-          that.ClassList=res.data.data
+          that.classList=res.data.data
         }
       }).catch((res) => {
         console.log(res);
@@ -242,15 +260,21 @@ export default {
         this.$refs.addFormRef.resetFields();
       });
 
-      this.addForm.name = "";
-      this.addForm.description = "";
-      this.addForm.teacher = "";
+      this.addForm.week = "";
+      this.addForm.starttime="";
+      this.addForm.endtime="";
+      this.addForm.room="";
+      this.addForm.courseid="";
+      this.addForm.teacherid="";
+      this.addForm.reportrate="";
+      this.addForm.attendrate="";
+      this.addForm.cprate="";
     },
     //点击确定按钮后,添加class
     addClass()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid).then((res) => {
+      axios.post("//139.224.65.154:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid+"&reportrate="+that.addForm.reportrate+"&attendrate="+that.addForm.attendrate+"&cprate="+that.addForm.cprate).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getClassList();

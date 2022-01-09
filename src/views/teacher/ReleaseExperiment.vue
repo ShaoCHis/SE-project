@@ -10,28 +10,17 @@
           :model="form"
           :rules="rules"
       >
-        <el-form-item label="实验名称" prop="experimentName" style="width: 50%">
-          <el-input v-model="form.experimentName"></el-input>
+        <el-form-item label="实验名称" prop="experimentname" style="width: 50%">
+          <el-input v-model="form.experimentname"></el-input>
         </el-form-item>
-        <el-form-item label="实验截止日期" required>
-          <el-col :span="11">
-            <el-form-item prop="releaseTime">
-              <el-date-picker
-                  v-model="form.releaseTime"
-                  type="date"
-                  placeholder="选择一个日期"
-                  style="width: 100%"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
+        <el-form-item label="课程id" prop="courseid" style="width: 50%">
+          <el-input v-model="form.courseid"></el-input>
         </el-form-item>
-
-        <el-form-item label="实验要求" prop="need" style="width: 100%;">
-          <el-input v-model="form.need" type="textarea"></el-input>
+        <el-form-item label="实验要求" prop="intro" style="width: 100%;">
+          <el-input v-model="form.intro" type="textarea"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">发布</el-button>
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -72,6 +61,8 @@
 import request from "@/utils/request"
 import { ElNotification } from 'element-plus'*/
 
+import axios from "axios";
+
 export default {
   components: {
     //图片
@@ -91,21 +82,21 @@ export default {
       },
 
       rules: {
-        experimentName: [
+        experimentname: [
           {
             required: true,
             message: '请输入实验名称',
             trigger: 'blur',
           },
         ],
-        releaseTime: [
+        courseid: [
           {
             required: true,
-            message: '请选择发布时间',
+            message: '请输入课程id',
             trigger: 'blur',
           },
         ],
-        need: [
+        intro: [
           {
             required: true,
             message: '请描述一下实验要求',
@@ -117,68 +108,20 @@ export default {
   },
 
   methods: {
-    /*release() {
-      request.post("/api/experiment/release", this.form).then(res => {
-        this.imageUrl=''
-        this.resetForm("ruleForm")
-        console.log(res)
+    submitForm()
+    {
+      let that = this;
+      axios.post("//139.224.65.154:8080/experiments/add?courseid=" + that.form.courseid + "&experimentname" + that.form.experimentname + "&intro=" + that.form.intro).then((res) => {
+        //隐藏添加公告对话框
+        this.addDialogVisible = false;
+        console.log(res);
+        if(res.data.success!=true)
+          return this.$message.error('增加失败！');
+        this.$message.info("添加成功!");
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
       })
-
-      ElNotification({
-        title: '成功',
-        message: '实验项目已发布',
-        type: 'success',
-      })
-    },*/
-
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          this.release()
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
-
-    //上传图片
-    handlefaceSuccess(res) {
-      this.form.face = res.result
-      this.imageUrl = this.form.face
-      console.log(this.imageUrl)
-    },
-
-    //获取图片
-
-
-    beforefaceUpload(file) {
-      // 设置限定格式
-      const img_mimetype = ['image/jpeg', 'image/jpg', 'image/png']
-      const isJPG = img_mimetype.includes(file.type);
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isJPG) {
-        this.$message.error('上传头像只能是图片格式!');
-        return false;
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-        return false;
-      }
-      return isJPG && isLt2M;
-    },
-    // 文件上传
-    submitUpload() {
-      this.$refs.upload.submit();
-    },
-    submitSuccess(res){
-      this.form.data=res.result
-      console.log(this.form.data)
     },
   },
 }
