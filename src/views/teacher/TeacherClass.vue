@@ -228,7 +228,7 @@ export default {
     //获取列表
     async getClassList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/classes`).then((res) => {
+      axios.get(`//localhost:8080/classes`).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.classList=res.data.data
@@ -274,7 +274,7 @@ export default {
     addClass()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid+"&reportrate="+that.addForm.reportrate+"&attendrate="+that.addForm.attendrate+"&cprate="+that.addForm.cprate).then((res) => {
+      axios.post("//localhost:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid+"&reportrate="+that.addForm.reportrate+"&attendrate="+that.addForm.attendrate+"&cprate="+that.addForm.cprate).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getClassList();
@@ -323,7 +323,7 @@ export default {
     async editClass()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/assignta?teacherid=" + that.studentForm.teacherid + "&assistantid=" + that.studentForm.assistantid ).then((res) => {
+      axios.post("//localhost:8080/assignta?teacherid=" + that.studentForm.teacherid + "&assistantid=" + that.studentForm.assistantid ).then((res) => {
         //隐藏添加公告对话框
         console.log(res);
         this.addStudent= false;
@@ -350,7 +350,7 @@ export default {
         return this.$message.info("已经取消删除");
       } else
       {
-        await axios.delete("//139.224.65.154:8080/classes" + "/" + classId).then((res)=>{
+        await axios.delete("//localhost:8080/classes" + "/" + classId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

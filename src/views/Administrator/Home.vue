@@ -40,11 +40,6 @@
             <el-menu-item index="AdminTeacher" @click="goTeacher">教师管理</el-menu-item>
             <el-menu-item index="AdminUser" @click="goUser">用户管理</el-menu-item>
           </el-submenu>
-          <el-submenu index="2">
-            <template slot="title"><i class="el-icon-s-check"></i>课程管理</template>
-            <el-menu-item index="AdminCourse" @click="goCourse">课程管理</el-menu-item>
-            <el-menu-item index="AdminClass" @click="goClass">班级管理</el-menu-item>
-          </el-submenu>
         </el-menu>
       </el-aside>
       <!--            右侧内容主体-->

@@ -179,7 +179,7 @@ export default {
     async getCourseList()
     {
       let that = this;
-      axios.get(`//139.224.65.154:8080/courses`).then((res) => {
+      axios.get(`//localhost:8080/courses`).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.courseList=res.data.data
@@ -218,7 +218,7 @@ export default {
     addCourse()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + 2 ).then((res) => {
+      axios.post("//localhost:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + 2 ).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getCourseList();
@@ -298,7 +298,7 @@ export default {
         return this.$message.info("已经取消删除");
       } else
       {
-        await axios.delete("//139.224.65.154:8080/courses" + "/" + course_id).then((res)=>{
+        await axios.delete("//localhost:8080/courses" + "/" + course_id).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

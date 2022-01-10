@@ -102,7 +102,7 @@ export default {
     //点击确定按钮后,添加公告
     addAttendance() {
       let that = this;
-      axios.post("//139.224.65.154:8080/attendances/set?classid=" + that.addForm.classid + "&code=" + that.addForm.code).then((res) => {
+      axios.post("//localhost:8080/attendances/set?classid=" + that.addForm.classid + "&code=" + that.addForm.code).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         console.log(res);
@@ -149,7 +149,7 @@ export default {
       if (confirmResult !== "confirm") {
         return this.$message.info("已经取消删除");
       }else {
-        await axios.delete("//139.224.65.154:8080/classnotices" + "/" + noticeId).then((res)=>{
+        await axios.delete("//localhost:8080/classnotices" + "/" + noticeId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

@@ -45,11 +45,11 @@
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="pageNumber"
-          :page-sizes="[1, 2, 5, 10]"
-          :page-size="pageSize"
+          :current-page.sync="currentPage"
+          :page-sizes="[2, 5, 10]"
+          :page-size.sync="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
+          :total="examineSearchData.length">
       </el-pagination>
     </el-card>
 
@@ -133,7 +133,8 @@ export default {
       //当前的页码
       pageNumber: 1,
       //每页显示的条数
-      pageSize: 5,
+      currentPage:1,
+      pageSize: 10,
 
       //查询到的当页公告
       UserList: [],
@@ -159,10 +160,20 @@ export default {
   created() {
     this.getUserList();
   },
+  computed:{
+    examineSearchData(){
+      return (this.UserList.filter(data => !this.search ||
+          data.userId.toLowerCase().includes(this.search.toLowerCase())))
+    },
+    examineCurData:function(){
+      return this.examineSearchData.slice((this.currentPage - 1) * this.pageSize,
+          Math.min(this.currentPage * this.pageSize, this.examineSearchData.length));
+    }
+  },
   methods: {
     async getUserList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/users`).then((res) => {
+      axios.get(`//localhost:8080/users`).then((res) => {
 
           console.log(res);
           that.UserList=res.data.data;
@@ -199,7 +210,7 @@ export default {
     //点击确定按钮后,添加公告
     addUser() {
       let that = this;
-      axios.post("//139.224.65.154:8080/users/register?name=" + that.addForm.name + "&password=" + that.addForm.password + "&roleid="+that.addForm.roleid +"&email=" + that.addForm.email ).then((res) => {
+      axios.post("//localhost:8080/users/register?name=" + that.addForm.name + "&password=" + that.addForm.password + "&roleid="+that.addForm.roleid +"&email=" + that.addForm.email ).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getUserList();
@@ -251,7 +262,7 @@ export default {
       if (confirmResult !== "confirm") {
         return this.$message.info("已经取消删除");
       }else {
-        await axios.delete("//139.224.65.154:8080/users" + "/" + userId).then((res)=>{
+        await axios.delete("//localhost:8080/users" + "/" + userId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");

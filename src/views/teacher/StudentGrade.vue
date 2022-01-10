@@ -85,7 +85,7 @@ export default {
   methods: {
     async getGradeList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/grades/studentgrade/`+that.classid).then((res) => {
+      axios.get(`//localhost:8080/grades/studentgrade/`+that.classid).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.GradeList=res.data.data

@@ -111,7 +111,7 @@ export default {
     submitForm()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/experiments/add?courseid=" + that.form.courseid + "&experimentname" + that.form.experimentname + "&intro=" + that.form.intro).then((res) => {
+      axios.post("//localhost:8080/experiments/add?courseid=" + that.form.courseid + "&experimentname" + that.form.experimentname + "&intro=" + that.form.intro).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         console.log(res);

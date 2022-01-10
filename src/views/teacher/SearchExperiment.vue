@@ -85,7 +85,7 @@ export default {
   methods: {
     async getExperimentList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/experiments/`+that.courseid).then((res) => {
+      axios.get(`//localhost:8080/experiments/`+that.courseid).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.ExperimentList=res.data.data

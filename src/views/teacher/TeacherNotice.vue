@@ -154,7 +154,7 @@ export default {
   methods: {
     async getAnnouncementList() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/classnotices`).then((res) => {
+      axios.get(`//localhost:8080/classnotices`).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.AnnouncementList=res.data.data
@@ -192,7 +192,7 @@ export default {
     //点击确定按钮后,添加公告
     addAnnouncement() {
       let that = this;
-      axios.post("//139.224.65.154:8080/classnotices/add?category=" + that.addForm.category + "&title=" + that.addForm.title + "&content=" + that.addForm.content + "&classid=" + that.addForm.classid).then((res) => {
+      axios.post("//localhost:8080/classnotices/add?category=" + that.addForm.category + "&title=" + that.addForm.title + "&content=" + that.addForm.content + "&classid=" + that.addForm.classid).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getAnnouncementList();
@@ -243,7 +243,7 @@ export default {
       if (confirmResult !== "confirm") {
         return this.$message.info("已经取消删除");
       }else {
-        await axios.delete("//139.224.65.154:8080/classnotices" + "/" + noticeId).then((res)=>{
+        await axios.delete("//localhost:8080/classnotices" + "/" + noticeId).then((res)=>{
           console.log(res)
         });
         this.$message.info("删除成功!");
