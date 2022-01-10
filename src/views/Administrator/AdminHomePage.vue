@@ -2,86 +2,194 @@
   <div class="main">
     <el-row>
       <!--    公告板-->
-      <div class="board">
-        <el-tabs label="系统公告" v-model="SysactiveName" @tab-click="handleClick1">
-          <el-tab-pane label="系统公告一" name="first">公告一</el-tab-pane>
-          <el-tab-pane label="系统公告二" name="second">公告二</el-tab-pane>
-          <el-tab-pane label="系统公告三" name="third">公告三</el-tab-pane>
-          <el-tab-pane label="系统公告四" name="fourth">公告四</el-tab-pane>
-        </el-tabs>
-      </div>
-      <div class="board">
-        <el-tabs label="教师公告" v-model="TeaactiveName" @tab-click="handleClick2">
-          <el-tab-pane label="教师公告一" name="first">公告一</el-tab-pane>
-          <el-tab-pane label="教师公告二" name="second">公告二</el-tab-pane>
-          <el-tab-pane label="教师公告三" name="third">公告三</el-tab-pane>
-          <el-tab-pane label="教师公告四" name="fourth">公告四</el-tab-pane>
-        </el-tabs>
-      </div>
+
+        <h2 style="font-size: 25px;margin-right: 65%">实验公告</h2>
+        <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh;width: 100%">
+          <ul
+              class="list"
+              v-infinite-scroll="load"
+              infinite-scroll-disabled="disabled">
+            <li v-for="i in systemNotices" class="list-item" :key=i.noticeId>
+              {{ i.category + "!" + i.title + ":" + i.content }}
+              <br>
+              <span style="font-size: 15px;align:right">{{ i.uploadTime }}</span>
+            </li>
+          </ul>
+          <p v-if="loading">Loading...</p>
+          <p v-if="noMoreSystem">No more</p>
+        </div>
+
+        <h2 style="font-size: 25px;margin-right: 65%">教师公告</h2>
+        <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh">
+          <ul
+              class="list"
+              v-infinite-scroll="load"
+              infinite-scroll-disabled="disabled">
+            <li v-for="i in classNotices" class="newList-item" :key=i.noticeId>
+              {{ i.category + "!" + i.title + ":" + i.content }}
+              <br>
+              <span style="font-size: 15px;align:right">{{ i.uploadTime }}</span>
+            </li>
+          </ul>
+          <p v-if="loading">Loading...</p>
+          <p v-if="noMoreClass">No more</p>
+        </div>
     </el-row>
   </div>
 
 </template>
 
 <script>
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 export default {
+
   data() {
-
     return {
-      //公告板
-      message1: "公告一",
-      SysactiveName: 'first',
-      TeaactiveName:'first',
-
-      exp:{
-        experiment_id:'',
-        face: '',
-        release_time: '',
-        experiment_name: '',
-        course_id: ''
-      },
-      latestExp: [],
+      id: "",
+      classId: "",
+      //公告显示的条数
+      classCount: 10,
+      systemCount: 10,
+      //加载状态
+      loading: false,
+      systemNotices: [],
+      classNotices: [],
+      courserInfo:{},
     }
+  },
+  computed: {
+    noMoreClass() {
+      return this.count >= this.classNotices.length;
+    },
+    disabledClass() {
+      return this.loading || this.noMoreClass
+    },
+    noMoreSystem() {
+      return this.count >= this.systemNotices.length;
+    },
+    disabledSystem() {
+      return this.loading || this.noMoreSystem
+    },
   },
   methods: {
-    handleClick1 (tab, event) {
-      console.log(tab, event)
+    load() {
+      this.loading = true
+      setTimeout(() => {
+        this.count += 2
+        this.loading = false
+      }, 2000)
     },
-    handleClick2 (tab, event) {
-      console.log(tab, event)
+    async getSystemNotices() {
+      let that = this;
+      axios.get(`//139.224.65.154:8080/sysnotices`).then((res) => {
+        if (res.data.success == true) {
+          that.systemNotices = res.data.data;
+        }
+        for (let i in that.systemNotices) {
+          //let delayTime = new Date(experiment.uploadTime).toJSON();
+          that.systemNotices[i].uploadTime = new Date(
+              +new Date(that.systemNotices[i].uploadTime) + 8 * 3600 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getClassNotices() {
+      let that = this;
+      axios.get(`//139.224.65.154:8080/classnotices/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.classNotices = res.data.data;
+        }
+        for (let i in that.classNotices) {
+          //let delayTime = new Date(experiment.uploadTime).toJSON();
+          that.classNotices[i].uploadTime = new Date(
+              +new Date(that.classNotices[i].uploadTime) + 8 * 3600 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+        }
+        console.log(res.data.data)
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getCourse(){
+      let that = this;
+      axios.get(`//139.224.65.154:8080/classes/getcourse/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.courserInfo = res.data.data;
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     }
   },
+
+  mounted() {
+    this.id = this.$route.params.id;
+    this.classId = this.$route.params.classId;
+    this.getClassNotices();
+    this.getSystemNotices();
+    this.getCourse();
+  },
+  watch: {
+    '$route.params.classId'() {
+      this.classId = this.$route.params.classId;
+      this.getClassNotices()
+      this.getCourse();
+    },
+  },
+  created() {
+    this.id = this.$route.params.id;
+    this.classId = this.$route.params.classId;
+    this.getClassNotices();
+    this.getSystemNotices();
+    this.getCourse();
+  }
 }
 </script>
 
 <style>
-.main {
-  height: max-content;
-  background-color: white;
-  border-radius: 8px;
-  padding: 50px 50px 200px 50px
+.block {
+  display: inline-block;
 }
 
-
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 200px;
-  margin: 0;
-  text-align: center;
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 1px;
 }
 
-/*公告板*/
-.board {
-  background-color: #d3dce6;
+.list-item {
+  list-style: none;
+  padding: 0;
+  margin: 4px;
+  padding: 2px;
+  width: 100%;
+  background-color: #f0f9eb;
+  font-size: 20px;
   float: left;
-  margin-left: 50px;
-  padding: 10px;
-  height: 200px;
-  width: 40%;
-  border-radius: 10px;
 }
-
+.newList-item {
+  list-style: none;
+  padding: 0;
+  margin: 4px;
+  padding: 2px;
+  width: 100%;
+  background-color: oldlace;
+  font-size: 25px;
+  float: left;
+}
 </style>
