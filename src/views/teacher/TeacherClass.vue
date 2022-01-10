@@ -30,7 +30,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!--                        增加学生按钮-->
-            <el-button type="primary" @click="showAddStudent(scope.row.classId)"
+            <el-button type="primary" @click="showAddStudent"
                        icon="el-icon-edit"></el-button>
             <!--                        删除按钮-->
             <el-button type="primary" @click="removeById(scope.row.classId)"
@@ -117,14 +117,14 @@
       </el-dialog>
 
       <!--        添加学生对话框-->
-      <el-dialog title="学生添加" :visible.sync="addStudent"
+      <el-dialog title="助教添加" :visible.sync="addAssistant"
                  width="630px" top="60px" center>
         <el-form :model="studentForm"  ref="editFormRef" label-width="150px" style="height:380px">
-          <el-form-item label="班级id:" prop="classid">
-            <el-input style="width: 82%;" v-model="studentForm.classid"></el-input>
+          <el-form-item label="教师id:" prop="teacherid">
+            <el-input style="width: 82%;" v-model="studentForm.teacherid"></el-input>
           </el-form-item>
-          <el-form-item label="学生ID:" prop="studentid">
-            <el-input style="width: 82%;" v-model="studentForm.studentid"></el-input>
+          <el-form-item label="助教id:" prop="assistantid">
+            <el-input style="width: 82%;" v-model="studentForm.assistantid"></el-input>
           </el-form-item>
         </el-form>
 
@@ -193,7 +193,7 @@ export default {
       addDialogVisible: false,
       editDialogVisible: false,
       showDialogVisible: false,
-      addStudent: false,
+      addAssistant: false,
 
 
       //添加活动表单数据
@@ -211,8 +211,8 @@ export default {
       showForm: {},
       editForm: {},
       studentForm:{
-        classid:"",
-        studentid: ""
+        teacherid:"",
+        assistantid: ""
       },
       //添加活动的校验规则
       addFormRules: {
@@ -310,21 +310,22 @@ export default {
     //取消修改活动
     cancelEdit()
     {
-      this.editDialogVisible = false;
-      this.$message.info("取消添加学生班级!");
+      this.addAssistant = false;
+      this.$message.info("取消添加助教!");
     },
-    showAddStudent(classid)
+    showAddStudent()
     {
-      this.addStudent = true;
-      this.studentForm.classid=classid;
-      this.studentForm.studentid="";
+      this.addAssistant = true;
+      this.studentForm.teacherid="";
+      this.studentForm.assistantid="";
     },
     //添加学生
     async editClass()
     {
       let that = this;
-      axios.post("//139.224.65.154:8080/takeclass/add?classid=" + that.studentForm.classid + "&studentid=" + that.addForm.studentid ).then((res) => {
+      axios.post("//139.224.65.154:8080/assignta?teacherid=" + that.studentForm.teacherid + "&assistantid=" + that.studentForm.assistantid ).then((res) => {
         //隐藏添加公告对话框
+        console.log(res);
         this.addStudent= false;
         if(res.data.success!=true)
           return this.$message.error('增加失败！');

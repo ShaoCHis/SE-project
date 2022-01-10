@@ -143,6 +143,16 @@ const routes=[
                 path:'StudentGrade',
                 name:"studentGrade",
                 component:()=>import('../views/teacher/StudentGrade')
+            },
+            {
+                path:'SearchExperiment',
+                name:"searchExperiment",
+                component:()=>import('../views/teacher/SearchExperiment')
+            },
+            {
+                path:'TeacherAttendance',
+                name:"teacherAttendance",
+                component:()=>import('../views/teacher/TeacherAttendance')
             }
         ]
     }

@@ -32,6 +32,7 @@
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-menu"></i>实验管理</template>
             <el-menu-item index="ReleaseExperiment" @click="goRelease">发布实验</el-menu-item>
+            <el-menu-item index="SearchExperiment" @click="goSearchExperiment">实验查询</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-s-check"></i>成绩管理</template>
@@ -46,6 +47,10 @@
             <template slot="title"><i class="el-icon-s-check"></i>课程管理</template>
             <el-menu-item index="TeacherCourse" @click="goTeacherCourse">课程创建</el-menu-item>
             <el-menu-item index="TeacherClass" @click="goTeacherClass">班级创建</el-menu-item>
+          </el-submenu>
+          <el-submenu index="5">
+            <template slot="title"><i class="el-icon-s-check"></i>考勤管理</template>
+            <el-menu-item index="ExperimentReport" @click="goTeacherAttendances">教师设置考勤</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -130,6 +135,17 @@ export default {
     {
       this.$router.push({
         name:"studentGrade",
+      })
+    },
+    goSearchExperiment()
+    {
+      this.$router.push({
+        name:"searchExperiment",
+      })
+    },
+    goTeacherAttendances() {
+      this.$router.push({
+        name: "teacherAttendance",
       })
     }
   }
