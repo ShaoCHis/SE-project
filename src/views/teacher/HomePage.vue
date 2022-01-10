@@ -90,11 +90,11 @@ export default {
     },
 
     //获取最新发布的实验
-    /*getLatestExp() {
-      request.get("/api/experiment/latestExp").then(res => {
+    getLatestExp() {
+      /*request.get("/api/experiment/latestExp").then(res => {
         this.latestExp = res;
-      })
-    },*/
+      })*/
+    },
   },
 }
 </script>

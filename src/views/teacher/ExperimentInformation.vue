@@ -82,9 +82,6 @@
             <el-col class="item" :span="7" style="color: orangered" v-else>暂无权限</el-col>
           </el-row>
         </el-card>
-        <el-row style="position: absolute;bottom: 10px;padding-left: 20px">
-          <el-button class="edit" type="success" round>立即填写</el-button>
-        </el-row>
       </el-col>
     </el-row>
   </div>
@@ -131,22 +128,6 @@ export default {
         url: '',
         documentName: '',
         experimentId: '',
-      },
-      comment: {
-        userId: '',
-        content: '',
-        experimentId: '',
-        commentTime: '',
-        star: 0
-      },
-      commentVO: {
-        isLike: '',
-        commentId: '',
-        userId: '',
-        content: '',
-        experimentId: '',
-        commentTime: '',
-        star: 0
       },
       comments: [],
       documents: []

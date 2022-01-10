@@ -36,6 +36,7 @@
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-s-check"></i>成绩管理</template>
             <el-menu-item index="ExperimentReport" @click="goExReport">实验报告批改</el-menu-item>
+            <el-menu-item index="StudentGrade" @click="goStudentGrade">学生成绩查询</el-menu-item>
           </el-submenu>
           <el-submenu index="3">
             <template slot="title"><i class="el-icon-s-check"></i>公告管理</template>
@@ -123,6 +124,12 @@ export default {
     {
       this.$router.push({
         name:"teacherClass",
+      })
+    },
+    goStudentGrade()
+    {
+      this.$router.push({
+        name:"studentGrade",
       })
     }
   }

@@ -4,8 +4,8 @@
       <el-row :gutter="20">
         <el-col :span="6">
       <div style="width:300px">
-        <el-form-item label="实验名称" prop="name">
-          <el-input v-model="form.name" :disabled="true"></el-input>
+        <el-form-item label="实验名称" prop="title">
+          <el-input v-model="form.title" :disabled="true"></el-input>
         </el-form-item>
       </div>
         </el-col>
@@ -45,26 +45,13 @@
 
       <el-divider content-position="left"></el-divider>
       <div>
-        <el-form-item>
-          <el-row>
-            <el-col :span="8">
-              <span class="demonstration">实验报告完整性</span>
-              <el-rate v-model="gradeOne" allow-half />
-            </el-col>
-            <el-col :span="8">
-              <span class="demonstration">实验结果正确性</span>
-              <el-rate v-model="gradeTwo" allow-half />
-            </el-col>
-            <el-col :span="8">
-              <span class="demonstration">实验总结</span>
-              <el-rate v-model="gradeThree" allow-half />
-            </el-col>
-          </el-row>
+        <el-form-item label="实验报告得分" prop="score">
+          <el-input type="textarea" v-model="form.score" ></el-input>
         </el-form-item>
       </div>
 
-      <el-form-item label="实验报告评价" prop="name">
-        <el-input type="textarea" v-model="form.comment" rows="10"></el-input>
+      <el-form-item label="实验报告评价" prop="pingyu">
+        <el-input type="textarea" v-model="form.pingyu" rows="10"></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -79,7 +66,7 @@
             <el-button type="primary" @click="onSubmit">确认完成</el-button>
           </template>
         </el-popconfirm>
-        <el-button>     取消</el-button>
+        <el-button>    取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -89,9 +76,6 @@
 export default {
   data(){
     return {
-      gradeOne:'',
-      gradeTwo:'',
-      gradeThree:'',
       form: {
         name: '',
         teacher: '',
@@ -106,6 +90,8 @@ export default {
         content: '',
         sum:'',
         comment:'',
+        score:"",
+        pingyu:"",
       },
     }
   },
