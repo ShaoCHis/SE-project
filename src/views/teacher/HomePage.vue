@@ -158,20 +158,20 @@ export default {
         console.log(res);
         that.$message.error("Time out!Please try again!");
       })
-    }
-  },
-  experimentInformation(experimentId){
-    this.$router.push({
-      name:'experimentInformation',
-      query: {experimentId: experimentId}
-    })
-  },
+    },
+    experimentInformation(experimentId){
+      this.$router.push({
+        name:'experimentInformation',
+        query: {experimentId: experimentId}
+      })
+    },
 
-  //获取最新发布的实验
-  getLatestExp() {
-    /*request.get("/api/experiment/latestExp").then(res => {
-      this.latestExp = res;
-    })*/
+    //获取最新发布的实验
+    getLatestExp() {
+      /*request.get("/api/experiment/latestExp").then(res => {
+        this.latestExp = res;
+      })*/
+    },
   },
 
   mounted() {
