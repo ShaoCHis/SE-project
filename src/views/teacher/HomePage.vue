@@ -18,22 +18,6 @@
         <p v-if="loading">Loading...</p>
         <p v-if="noMoreSystem">No more</p>
       </div>
-
-      <h2 style="font-size: 25px;margin-right: 65%">教师公告</h2>
-      <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh">
-        <ul
-            class="list"
-            v-infinite-scroll="load"
-            infinite-scroll-disabled="disabled">
-          <li v-for="i in classNotices" class="newList-item" :key=i.noticeId>
-            {{ i.category + "!" + i.title + ":" + i.content }}
-            <br>
-            <span style="font-size: 15px;align:right">{{ i.uploadTime }}</span>
-          </li>
-        </ul>
-        <p v-if="loading">Loading...</p>
-        <p v-if="noMoreClass">No more</p>
-      </div>
     </el-row>
     <el-divider></el-divider>
     <el-row class="new_exp" style="color: #409EFF">
