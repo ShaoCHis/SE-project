@@ -26,7 +26,7 @@ Tongji University
             <el-input
                 v-model="RegisterForm.email"
                 prefix-icon="el-icon-user"
-                placeholder="请输入邮箱（学校邮箱）"
+                placeholder="请输入邮箱（账号邮箱）"
                 clearable
             ></el-input>
           </el-form-item>
@@ -46,27 +46,27 @@ Tongji University
             </div>
           </el-form-item>
           <!-- 密码 -->
-          <el-form-item prop="password">
-            <el-input
-                v-model="RegisterForm.password"
-                prefix-icon="el-icon-lock"
-                type="password"
-                placeholder="请输入密码"
-                show-password
-                clearable
-            ></el-input>
-          </el-form-item>
+<!--          <el-form-item prop="password">-->
+<!--            <el-input-->
+<!--                v-model="RegisterForm.password"-->
+<!--                prefix-icon="el-icon-lock"-->
+<!--                type="password"-->
+<!--                placeholder="请输入密码"-->
+<!--                show-password-->
+<!--                clearable-->
+<!--            ></el-input>-->
+<!--          </el-form-item>-->
           <!--          确认密码-->
-          <el-form-item prop="password">
-            <el-input
-                v-model="password"
-                prefix-icon="el-icon-lock"
-                type="password"
-                placeholder="请再次输入密码"
-                show-password
-                clearable
-            ></el-input>
-          </el-form-item>
+<!--          <el-form-item prop="password">-->
+<!--            <el-input-->
+<!--                v-model="password"-->
+<!--                prefix-icon="el-icon-lock"-->
+<!--                type="password"-->
+<!--                placeholder="请再次输入密码"-->
+<!--                show-password-->
+<!--                clearable-->
+<!--            ></el-input>-->
+<!--          </el-form-item>-->
 
           <!-- 按钮区域 -->
           <el-form-item class="btns">
@@ -94,7 +94,6 @@ export default {
       RegisterForm: {
         email: "",
         identification: "",
-        password: "",
       },
       loginRules: {
         username: [
@@ -106,6 +105,7 @@ export default {
         ],
       },
       identification: "",
+      userId:""
     }
   },
 
@@ -117,9 +117,14 @@ export default {
 
     async getIdentification() {
       let that=this;
-      axios.get(`//106.14.69.227:18080/api/msm/send/` + that.RegisterForm.email
+      axios.get(`//localhost:8080/mails/sendMail?` + that.userId
       ).then((res => {
-        this.identification = res.data.data;
+        if(res.data.data.success==true){
+          this.$message.success(res.data.data.message)
+        }
+        else{
+          this.$message.error("验证码发送失败！请重试！");
+        }
         console.log(res)
       })).catch((res) => {
         console.log(res);
@@ -128,20 +133,7 @@ export default {
     },
 
     async register() {
-      let that = this;
-      if (this.identification != this.RegisterForm.identification) {
-        this.$message.error("验证码错误！");
-        return
-      }
-      if (this.password != this.RegisterForm.password) {
-        this.$message.error("两次密码输入不一致！请重新输入！");
-        return;
-      }
-      let data = {
-        "email": that.RegisterForm.email,
-        "password": that.RegisterForm.password
-      }
-      axios.post(`//106.14.69.227:18080/api/Login/sensitize`, data).then((res => {
+      axios.post(`//localhost:8080/mails/identify?code=`+this.RegisterForm.identification+"&userid="+this.userId).then((res => {
         console.log(res)
         if (res.data.success == true) {
           this.$message.success("激活成功！请登陆！");
@@ -169,6 +161,9 @@ export default {
           }
       )
     },
+  },
+  created() {
+    this.userId=this.$route.params.userId;
   }
 }
 </script>
@@ -210,7 +205,7 @@ export default {
 
 .login_box {
   width: 450px;
-  height: 450px;
+  height: 350px;
   background-color: RGBA(255, 255, 255, 0.5);
   border-radius: 25px;
   position: absolute;

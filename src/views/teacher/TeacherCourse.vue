@@ -218,7 +218,12 @@ export default {
     addCourse()
     {
       let that = this;
-      axios.post("//localhost:8080/courses/add?coursename=" + that.addForm.coursename + "&intro=" + that.addForm.intro + "&administratorid=" + 2 ).then((res) => {
+      let body={
+        "courseName":that.addForm.coursename,
+        "intro":that.addForm.intro,
+        "administratorId":3
+      }
+      axios.post("//localhost:8080/courses/add",body ).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         this.getCourseList();

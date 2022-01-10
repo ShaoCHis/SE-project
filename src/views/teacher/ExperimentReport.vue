@@ -51,6 +51,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   // components: {
   //   readReport
@@ -61,106 +63,7 @@ export default {
       pageSize: 10,
       page: 1,
       currentPage: 1,
-      tableData: [
-        {
-          experimentName:'光学',
-          date: '2021-05-03',
-          name: 'Tom',
-          stuNum: '1952726',
-          score: 0,
-        },
-        {
-          experimentName:'热学',
-          date: '2021-05-02',
-          name: 'Jerry',
-          stuNum: '1952727',
-          score: 1,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 1,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 1,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 1,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 0,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 0,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 0,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 0,
-        },
-        {
-          experimentName:'化学',
-          date: '2021-05-02',
-          name: 'Eric',
-          stuNum: '1952729',
-          score: 0,
-        },
-        {
-          experimentName:'哲学',
-          date: '2021-05-02',
-          name: 'Sandy',
-          stuNum: '1952729',
-          score: 0,
-        },
-        {
-          experimentName:'力学',
-          date: '2021-05-02',
-          name: 'Amy',
-          stuNum: '1952728',
-          score: 0,
-        },
-        {
-          experimentName:'神学',
-          date: '2021-05-02',
-          name: 'Mark',
-          stuNum: '1952730',
-          score: 0,
-        },
-        {
-          experimentName:'光学',
-          date: '2021-05-02',
-          name: 'Marry',
-          stuNum: '1952731',
-          score: 0,
-        },
-      ],
+      tableData:[],
       keywords: '',
       filterDataShow: [],
     }
@@ -209,6 +112,22 @@ export default {
     handleCurrentChange(val) {
       this.page=val;
       this.currentPage=val;
+    },
+    getReports()
+    {
+      let that = this;
+      axios.post("//localhost:8080/classes/add?week=" + that.addForm.week + "&starttime=" + that.addForm.starttime + "&endtime=" + that.addForm.endtime + "&room=" + that.addForm.room + "&courseid=" + that.addForm.courseid+ "&teacherid=" + that.addForm.teacherid+"&reportrate="+that.addForm.reportrate+"&attendrate="+that.addForm.attendrate+"&cprate="+that.addForm.cprate).then((res) => {
+        //隐藏添加公告对话框
+        this.addDialogVisible = false;
+        this.getClassList();
+        console.log(res);
+        if(res.data.success!=true)
+          return this.$message.error('增加失败！');
+        this.$message.info("添加班级成功!");
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     },
   },
 }

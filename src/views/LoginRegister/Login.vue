@@ -27,7 +27,7 @@ Tongji University
             <el-input
                 v-model="loginForm.email"
                 prefix-icon="el-icon-user"
-                placeholder="请输入邮箱"
+                placeholder="请输入用户名"
             ></el-input>
           </el-form-item>
           <!-- 密码 -->
@@ -121,7 +121,7 @@ export default {
       let that = this;
       // let url = "106.14.69.227:18080/api/Login/session";
       // let data = {"name": that.loginForm.email, "password": that.loginForm.password};
-      axios.post(`//139.224.65.154:8080/users/login?`+"name="+that.loginForm.email+"&password="+that.loginForm.password).then((res) => {
+      axios.post(`//localhost:8080/users/login?`+"name="+that.loginForm.email+"&password="+that.loginForm.password).then((res) => {
         if (res.data.success == true) {
 
           //后续修改为角色判断字段
@@ -130,7 +130,8 @@ export default {
             this.$router.push({
               name: "studentHome",
               params: {
-                id: res.data.data.specialId
+                id: res.data.data.specialId,
+                userId:res.data.data.userId
               }
             })
           }
@@ -145,6 +146,9 @@ export default {
             })
           }
           this.$message.success("Login Success!Welcome!")
+        }
+        else {
+          that.$message.error("Login Failed!Please try again!");
         }
         console.log(res)
       }).catch((res) => {

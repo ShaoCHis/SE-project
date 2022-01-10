@@ -48,6 +48,10 @@
                 <i class="el-icon-location"></i>
                 <span slot="title" style="font-weight: bolder">实验签到</span>
               </el-menu-item>
+              <el-menu-item index="5" @click=goExercise style="font-size: 20px;margin-top: 20px">
+                <i class="el-icon-location"></i>
+                <span slot="title" style="font-weight: bolder">对抗练习</span>
+              </el-menu-item>
             </el-menu>
           </el-aside>
           <el-main style="margin-left: 20px">
@@ -74,8 +78,9 @@ export default {
 
   data() {
     return {
-      id: "",
+      id:"",
       classId: "",
+      userId:"",
       active:0,
       isCollapse: true,
       coursesList: []
@@ -129,11 +134,11 @@ export default {
         }
       })
     },
-    async getClasses() {
+    getClasses() {
       let that = this;
       // let url = "106.14.69.227:18080/api/Login/session";
       // let data = {"name": that.loginForm.email, "password": that.loginForm.password};
-      axios.get(`//139.224.65.154:8080/takeclass/bystudentid/` + that.id).then((res) => {
+      axios.get(`//localhost:8080/takeclass/bystudentid/` + that.id).then((res) => {
         if (res.data.success == true) {
           this.$router.push({
             name: "studentHome",
@@ -150,12 +155,45 @@ export default {
         that.$message.error("Loading Failed!Please try again!");
       })
     },
+    goExercise(){
+      this.$router.push({
+        name:"counteractingExercise",
+      })
+    },
+    getInfo(){
+      axios.get(`//localhost:8080/users/` + this.userId).then((res) => {
+        if (res.data.success == true) {
+          if(!res.data.data.activation){
+              this.$alert(
+                  "您的账号还未激活，请先到登录页面进行激活操作！",
+                  "帮助",
+                  {
+                    confirmButtonText: "确定",
+                  }
+              )
+              this.$router.push({
+                name: "register",
+                params:{
+                  userId:this.userId
+                }
+              })
+          }
+        }
+        console.log(res)
+      }).catch((res) => {
+        console.log(res);
+        this.$message.error("Loading Failed!Please try again!");
+      })
+    }
   },
+
   created() {
-    this.active=1
     this.id=this.$route.params.id;
+    this.userId=this.$route.params.userId;
+    this.getInfo();
     this.getClasses();
-  }
+    this.active="1"
+  },
 }
 </script>
 

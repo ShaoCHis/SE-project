@@ -9,6 +9,16 @@ Tongji University
   <div style="height: 100%">
     <el-container>
       <el-main>
+        <div style="height: 50px">
+          <el-row :span="24" style="top: 5px">
+            <el-col span="6">
+              <el-button type="success" @click="download">下载资料</el-button>
+            </el-col>
+            <el-col span="6">
+              <el-button style="background-color: #9cc0ff" @click="this.feedbackVisible=true">提交反馈</el-button>
+            </el-col>
+          </el-row>
+        </div>
         <div class="block" style="width: 100%">
           <el-timeline style="margin-top: 5%">
             <el-timeline-item
@@ -20,9 +30,12 @@ Tongji University
                 :timestamp="experiment.uploadTime" placement="top">
               <el-card style="height: 10vh">
                 <span style="font-size: 20px;align-content: center">{{ experiment.name }}</span>
-                <el-button style="position:absolute;right: 20%" type="success" @click="complete(experiment.experimentId,index)">填写
+                <el-button style="position:absolute;right: 20%" type="success"
+                           @click="complete(experiment.experimentId,index)">填写
                 </el-button>
-                <el-button style="position:absolute;right: 5%" type="primary">查看反馈以及得分</el-button>
+                <el-button style="position:absolute;right: 5%" type="primary"
+                           @click="checkReport(experiment.experimentId)">查看反馈以及得分
+                </el-button>
                 <br>
                 <span style="position: absolute;right: 100px;margin-top: 12px">截止时间：{{
                     new Date(
@@ -61,11 +74,149 @@ Tongji University
           </el-form-item>
         </el-form>
         <br>
-        <span>{{"上次修改时间："+updateTime}}</span>
+        <span>{{ "上次修改时间：" + updateTime }}</span>
         <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
             <el-button type="success" @click="submit">提交</el-button>
           </span>
+      </el-dialog>
+      <el-dialog
+          title="实验反馈"
+          :visible.sync="checkVisible"
+          width="60%"
+          :before-close="handleClose">
+        <el-descriptions title="用户信息" :column="1" border style="width:70%;margin-left:10%;margin-top: 5%;font-size:20px;font-weight: bolder" class="info">
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-files"></i>
+              实验报告名
+            </template>
+            {{report.title}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-scissors"></i>
+              实验得分
+            </template>
+            {{report.score}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-location-outline"></i>
+              评语
+            </template>
+            {{report.ping_yu}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-tickets"></i>
+              批改者
+            </template>
+            <el-tag>{{report.teacher_or_assistant}}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              批改时间
+            </template>
+            {{report.appraise_time}}
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
+    </div>
+    <div>
+      <el-dialog
+          title="提交课程反馈"
+          :visible.sync="feedbackVisible"
+          width="60%"
+          :before-close="handleClose">
+        <el-input v-model="feedbackContent" type="textarea"
+                  :autosize="{minRows:2,maxRows:3}" placeholder="Please input" clearable>
+        </el-input>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="feedbackVisible = false">取消</el-button>
+            <el-button type="success" @click="feedback">提交</el-button>
+          </span>
+      </el-dialog>
+      <el-dialog
+          title="实验反馈"
+          :visible.sync="checkVisible"
+          width="60%"
+          :before-close="handleClose">
+        <el-descriptions title="用户信息" :column="1" border style="width:70%;margin-left:10%;margin-top: 5%;font-size:20px;font-weight: bolder" class="info">
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-files"></i>
+              实验报告名
+            </template>
+            {{report.title}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-scissors"></i>
+              实验得分
+            </template>
+            {{report.score}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-location-outline"></i>
+              评语
+            </template>
+            {{report.ping_yu}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-tickets"></i>
+              批改者
+            </template>
+            <el-tag>{{report.teacher_or_assistant}}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <i class="el-icon-office-building"></i>
+              批改时间
+            </template>
+            {{report.appraise_time}}
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-dialog>
+      <el-dialog
+          title="文件列表"
+          :visible.sync="fileVisible"
+          width="60%"
+          :before-close="handleClose">
+        <el-table
+            :data="fileList"
+            border
+            height="270"
+            style="width: 100%;font-weight: bolder;font-size: 15px;">
+          <el-table-column
+              fixed
+              prop="fileName"
+              label="文件名称"
+              width="150">
+          </el-table-column>
+          <el-table-column
+              prop="type"
+              label="type"
+              width="170">
+          </el-table-column>
+          <el-table-column
+              prop="uploadTime"
+              label="上传时间"
+              width="250">
+          </el-table-column>
+          <el-table-column
+              fixed="right"
+              label="操作"
+              width="200">
+            <template slot-scope="index">
+              <el-button @click="handleClick(index.$index)" type="text" size="small">下载</el-button>
+              <el-button type="text" size="small" disabled>编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-dialog>
     </div>
   </div>
@@ -83,6 +234,9 @@ export default {
 
       //实验报告所需实验Id
       dialogVisible: false,
+      feedbackVisible:false,
+      checkVisible:false,
+      fileVisible:false,
       experimentId: "",
 
       color: '#0bbd87',
@@ -94,58 +248,94 @@ export default {
       //已提交则会拥有reportId
       reportId: "",
       //修改时间
-      updateTime:"null",
+      updateTime: "null",
 
       experiments: [],
+      courseId:"",
+
+      feedbackContent:"",
 
       report: {
         title: "",
         content: "",
         conclusion: ""
-      }
+      },
+      fileList:[]
+
     }
   },
   methods: {
-    complete(value,index) {
-      console.log("索引："+value,index)
+    handleClick(row) {
+      console.log(row);
+      console.log(this.fileList[row])
+      let that=this;
+      let formData = {
+        "courseId":this.courseId,
+        "fileName":this.fileList[row].fileName
+      }
+      axios.post(`//localhost:8080/coursefiles/downloadFile`,formData).then((res) => {
+        console.log(res)
+        this.fileVisible=false;
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getAllFiles(){
+      let that=this;
+      axios.get(`//localhost:8080/coursefiles/`+this.courseId).then((res) => {
+        console.log(res)
+        if (res.data.success == false) {
+          this.fileList=res.data.data;
+          console.log("file"+res.data)
+        }
+        this.fileVisible=true;
+        console.log(res)
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async complete(value, index) {
+      console.log("索引：" + value, index)
       //先调get进行判断数据库是否已经存在了实验报告
       console.log(this.experiments)
-      let nowDate=new Date();
-      let endDate=new Date(
+      let nowDate = new Date();
+      let endDate = new Date(
           +new Date(this.experiments[index].uploadTime) + 8 * 3600 * 1000 + 7 * 24 * 3600 * 1000
       )
-      console.log(nowDate<endDate)
-      if(nowDate>endDate){
+      console.log(nowDate < endDate)
+      if (nowDate > endDate) {
         this.$message.error("已超过实验报告提交时间，无法再次进行操作！");
         return
       }
       let that = this;
-      that.experimentId=value;
-      axios.get(`//139.224.65.154:8080/reports/get?experimentid=` + value + "&studentid=" + that.id).then((res) => {
+      that.experimentId = value;
+      axios.get(`//localhost:8080/reports/get?experimentid=` + value + "&studentid=" + that.id).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           if (res.data.data == null) {
-            that.report={
+            that.report = {
               title: "",
               content: "",
               conclusion: ""
             };
-            that.updateTime="null";
+            that.updateTime = "null";
             this.$message.warning("你还未提交过实验报告，请尽快提交！");
             that.isPresent = false;
           } else {
             this.$message.warning("你已提交过实验报告，在截止前你可以选择对其进行修改");
             that.isPresent = true;
-            that.reportId=res.data.data.reportId;
+            that.reportId = res.data.data.reportId;
             that.report = res.data.data;
-            if(that.report.updateTime==null){
+            if (that.report.updateTime == null) {
               that.updateTime = new Date(
                   +new Date(that.report.submitTime)
               )
                   .toISOString()
                   .replace(/T/g, " ")
                   .replace(/\.[\d]{3}Z/, "");
-            }else{
+            } else {
               that.updateTime = new Date(
                   +new Date(that.report.updateTime)
               )
@@ -162,8 +352,29 @@ export default {
       })
       this.dialogVisible = true
     },
+    async checkReport(value) {
+      let that = this;
+      that.experimentId = value;
+      axios.get(`//localhost:8080/reports/get?experimentid=` + value + "&studentid=" + that.id).then((res) => {
+        if (res.data.success == true) {
+          console.log(res);
+          that.report = res.data.data;
+          that.report.appraise_time = new Date(+new Date(that.report.appraise_time))
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+          that.checkVisible=true;
+        }else {
+          this.$message.warning("老师还未评阅，您无法查看！")
+        }
+        console.log(that.report)
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
     handleClose(done) {
-      this.$confirm('你确定要关闭吗？该操作将不会保存修改的实验报告内容！')
+      this.$confirm('你确定要关闭吗？该操作将不会保存修改的内容！')
           .then(_ => {
             done();
             this.$message.error("保存失败！")
@@ -172,11 +383,13 @@ export default {
           .catch(_ => {
             console.log(_)
           });
-    },
+    }
+    ,
     async submit() {
       let that = this;
-      if(that.isPresent==true){
-        axios.post(`//139.224.65.154:8080/reports/alter?reportid=` + that.reportId + "&title=" + that.report.title + "&content=" + that.report.content + "&conclusion=" + that.report.conclusion).then((res) => {
+      if (that.isPresent == true) {
+        axios.post(`//localhost:8080/reports/alter?reportid=` + that.reportId + "&title=" + that.report.title + "&content=" + that.report.content + "&conclusion=" + that.report.conclusion).then((res) => {
+          console.log(res)
           if (res.data.success == true) {
             this.$message.success("修改成功！")
           }
@@ -185,8 +398,9 @@ export default {
           console.log(res);
           that.$message.error("Time out!Please try again!");
         })
-      }else {
-        axios.post(`//139.224.65.154:8080/reports/submit?experimentid=` + that.experimentId +"&studentid="+that.id+ "&title=" + that.report.title + "&content=" + that.report.content + "&conclusion=" + that.report.conclusion).then((res) => {
+      } else {
+        axios.post(`//localhost:8080/reports/submit?experimentid=` + that.experimentId + "&studentid=" + that.id + "&title=" + that.report.title + "&content=" + that.report.content + "&conclusion=" + that.report.conclusion).then((res) => {
+          console.log(res)
           if (res.data.success == true) {
             this.$message.success("提交成功！")
           }
@@ -196,10 +410,11 @@ export default {
           that.$message.error("Time out!Please try again!");
         })
       }
-    },
+    }
+    ,
     async getExperiments() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/reports/getexperimentsofclass/` + that.classId).then((res) => {
+      axios.get(`//localhost:8080/reports/getexperimentsofclass/` + that.classId).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.experiments = res.data.data;
@@ -218,12 +433,43 @@ export default {
         console.log(res);
         that.$message.error("Time out!Please try again!");
       })
+    },
+    async download() {
+      await this.getAllFiles();
+      console.log("1");
+    },
+    async feedback(){
+      let that = this;
+      axios.get(`//localhost:8080/feedback/add?studentid=` + that.id+"&classid="+that.classId+"&feedback="+that.feedbackContent).
+      then((res) => {
+        if (res.data.success == true) {
+          console.log(res)
+          that.experiments = res.data.data;
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getCourse(){
+      let that = this;
+      axios.get(`//localhost:8080/classes/getcourse/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.courseId = res.data.data.course_id;
+          console.log(this.courseId)
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
     }
   },
   created() {
     this.id = this.$route.params.id;
     this.classId = this.$route.params.classId;
     this.getExperiments();
+    this.getCourse()
   }
 }
 </script>

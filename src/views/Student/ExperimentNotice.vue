@@ -9,7 +9,7 @@ Tongji University
   <div>
     <div>
       <h1 style="font-size: 25px;margin-right: 65%">{{courserInfo.name}}</h1>
-      <p style="font-size:20px;margin-right: 60%">{{courserInfo.intro}}</p>
+      <p style="font-size:20px;margin-right: 20%">{{courserInfo.intro}}</p>
     </div>
     <h2 style="font-size: 25px;margin-right: 65%">实验公告</h2>
     <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh;width: 100%">
@@ -90,7 +90,7 @@ export default {
     },
     async getSystemNotices() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/sysnotices`).then((res) => {
+      axios.get(`//localhost:8080/sysnotices`).then((res) => {
         if (res.data.success == true) {
           that.systemNotices = res.data.data;
         }
@@ -110,7 +110,7 @@ export default {
     },
     async getClassNotices() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/classnotices/` + that.classId).then((res) => {
+      axios.get(`//localhost:8080/classnotices/` + that.classId).then((res) => {
         if (res.data.success == true) {
           that.classNotices = res.data.data;
         }
@@ -131,7 +131,7 @@ export default {
     },
     async getCourse(){
       let that = this;
-      axios.get(`//139.224.65.154:8080/classes/getcourse/` + that.classId).then((res) => {
+      axios.get(`//localhost:8080/classes/getcourse/` + that.classId).then((res) => {
         if (res.data.success == true) {
           that.courserInfo = res.data.data;
           console.log(res)

@@ -36,8 +36,6 @@
           </el-menu-item>
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-menu"></i>人员管理</template>
-            <el-menu-item index="AdminStu" @click="goStu">学生管理</el-menu-item>
-            <el-menu-item index="AdminTeacher" @click="goTeacher">教师管理</el-menu-item>
             <el-menu-item index="AdminUser" @click="goUser">用户管理</el-menu-item>
           </el-submenu>
         </el-menu>

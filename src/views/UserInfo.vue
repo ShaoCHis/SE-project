@@ -54,9 +54,9 @@ export default {
   data(){
     return{
       info:{
-        name:"沈韬",
+        name:"xx",
         studentId:"1952395",
-        email:"1952395@tongji.edu.cn",
+        email:"764053156@qq.com",
         grade:"大三",
         major:"软件工程"
       }

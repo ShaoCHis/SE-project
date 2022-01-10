@@ -155,6 +155,8 @@ export default {
     async getAnnouncementList() {
       let that = this;
       axios.get(`//localhost:8080/classnotices`).then((res) => {
+
+        console.log(res);
         if (res.data.success == true) {
           console.log(res)
           that.AnnouncementList=res.data.data
@@ -195,6 +197,7 @@ export default {
       axios.post("//localhost:8080/classnotices/add?category=" + that.addForm.category + "&title=" + that.addForm.title + "&content=" + that.addForm.content + "&classid=" + that.addForm.classid).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
+        console.log(res);
         this.getAnnouncementList();
         if(res.data.success!=true)
           return this.$message.error('增加失败！');

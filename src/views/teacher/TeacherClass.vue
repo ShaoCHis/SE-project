@@ -42,7 +42,7 @@
 
       <!--        添加class对话框-->
       <el-dialog title="创建班级" :visible.sync="addDialogVisible"
-                 width="630px" top="60px" center>
+                 width="630px" top="70px" center>
         <!--            内容主体区域 放置一个表单-->
         <!--绑定到addForm中，绑定验证规则对象addFormRules 表单校验项的引用为addFormRef-->
         <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="150px"
@@ -325,6 +325,7 @@ export default {
       let that = this;
       axios.post("//localhost:8080/assignta?teacherid=" + that.studentForm.teacherid + "&assistantid=" + that.studentForm.assistantid ).then((res) => {
         //隐藏添加公告对话框
+        this.addAssistant = false;
         console.log(res);
         this.addStudent= false;
         if(res.data.success!=true)

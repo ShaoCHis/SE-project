@@ -60,7 +60,8 @@ export default {
     return {
       id: "",
       classId: "",
-      experiments: []
+      experiments: [],
+      courserId:""
     }
   },
   methods: {
@@ -85,7 +86,7 @@ export default {
     },
     async getExperiments() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/reports/getexperimentsofclass/` + that.classId).then((res) => {
+      axios.get(`//localhost:8080/reports/getexperimentsofclass/` + that.classId).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.experiments = res.data.data;
@@ -99,6 +100,42 @@ export default {
               .replace(/T/g, " ")
               .replace(/\.[\d]{3}Z/, "");
           console.log(that.experiments[i].uploadTime)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async getExperimentsGradeMean(){
+      let that = this;
+      axios.get(`//localhost:8080/grades/experimentmeanscore/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    //得到课程Id
+    async getCourse(){
+      let that = this;
+      axios.get(`//localhost:8080/classes/getcourse/` + that.classId).then((res) => {
+        if (res.data.success == true) {
+          that.courserId = res.data.data.courserId;
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    //再把得到的成绩放进图表进行显示
+    async getExperimentsGrade(){
+      let that = this;
+      axios.get(`//localhost:8080/reports/?studentid=`+that.id+"&courseid=" + that.courserId).then((res) => {
+        if (res.data.success == true) {
+          console.log(res)
         }
       }).catch((res) => {
         console.log(res);
@@ -178,7 +215,9 @@ export default {
   created() {
     this.id = this.$route.params.id;
     this.classId = this.$route.params.classId;
-    this.getExperiments()
+    this.getCourse();
+    this.getExperiments();
+    this.getExperimentsGradeMean();
   },
   watch: {
     '$route.params.classId'() {

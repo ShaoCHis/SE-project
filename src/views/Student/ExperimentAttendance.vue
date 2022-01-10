@@ -48,7 +48,7 @@ export default {
     },
     async submit(){
       let that=this;
-      axios.post(`//139.224.65.154:8080/attendances/attend?`+"studentid="+that.id+"&classid="+that.classId+"&code="+that.code).then((res) => {
+      axios.post(`//localhost:8080/attendances/attend?`+"studentid="+that.id+"&classid="+that.classId+"&code="+that.code).then((res) => {
         if (res.data.success == true) {
           this.$message.success("签到成功！")
           that.dialogVisible=false
