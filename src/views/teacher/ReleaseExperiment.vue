@@ -1,6 +1,13 @@
 <template>
   <el-row>
+    <!--        面包屑-->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
+      <el-breadcrumb-item>实验发布</el-breadcrumb-item>
+    </el-breadcrumb>
 
+    <el-divider></el-divider>
     <div class="exp">
       <el-form
           ref="ruleForm"

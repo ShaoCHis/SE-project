@@ -1,6 +1,13 @@
 <template>
   <div>
+    <!--        面包屑-->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
+      <el-breadcrumb-item>考勤管理</el-breadcrumb-item>
+    </el-breadcrumb>
 
+    <el-divider></el-divider>
     <!--        卡片-->
     <el-card class="box-card">
       <!--  添加-->

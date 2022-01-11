@@ -24,9 +24,9 @@ Tongji University
           <!-- 用户名 -->
           <el-form-item prop="userid">
             <el-input
-                v-model="RegisterForm.email"
+                v-model="email"
                 prefix-icon="el-icon-user"
-                placeholder="请输入邮箱（账号邮箱）"
+                placeholder="请输入用户email进行激活"
                 clearable
             ></el-input>
           </el-form-item>
@@ -70,6 +70,7 @@ Tongji University
 
           <!-- 按钮区域 -->
           <el-form-item class="btns">
+            <el-button type="success" @click="goLogin">登录</el-button>
             <el-button type="primary" @click="register" @keydown="register">激活</el-button>
             <el-button type="info" @click="resetLoginForm">重置</el-button>
             <el-button type="success" @click="show">帮助</el-button>
@@ -105,7 +106,8 @@ export default {
         ],
       },
       identification: "",
-      userId:""
+      userId:"",
+      email:""
     }
   },
 
@@ -122,7 +124,7 @@ export default {
       ).then((res => {
         console.log(res)
         if(res.data.success==true){
-          this.$message.success(res.data.data.message)
+          this.$message.success(res.data.message)
         }
         else{
           this.$message.error("验证码发送失败！请重试！");
@@ -135,6 +137,10 @@ export default {
     },
 
     async register() {
+      if(this.RegisterForm.identification.length==0){
+        this.$message.error("请先输入验证码！")
+        return
+      }
       axios.post(`//localhost:8080/mails/identify?code=`+this.RegisterForm.identification+"&userid="+this.userId).then((res => {
         console.log(res)
         if (res.data.success == true) {
@@ -143,10 +149,7 @@ export default {
             name: "login"
           })
         } else {
-          this.$message.success("用户已激活，请登录！");
-          this.$router.push({
-            name: "login"
-          })
+          this.$message.success(res.data.message);
         }
       })).catch(res => {
         this.$message.error("该用户不存在，请联系管理员！");
@@ -163,9 +166,15 @@ export default {
           }
       )
     },
+    goLogin(){
+      this.$router.push({
+        name: "login"
+      })
+    }
   },
   created() {
-    this.userId=this.$route.params.userId;
+    this.userId=this.$route.query.userId;
+    this.email=this.$route.query.email;
   }
 }
 </script>

@@ -15,7 +15,7 @@ Tongji University
               <el-button type="success" @click="download">下载资料</el-button>
             </el-col>
             <el-col span="6">
-              <el-button style="background-color: #9cc0ff" @click="this.feedbackVisible=true">提交反馈</el-button>
+              <el-button style="background-color: #9cc0ff" @click="feedbackVisible=true">提交反馈</el-button>
             </el-col>
           </el-row>
         </div>
@@ -218,7 +218,7 @@ export default {
         title: "",
         content: "",
         conclusion: "",
-        name:""
+        name: ""
       },
       fileList: []
 
@@ -233,8 +233,21 @@ export default {
         "courseId": this.courseId,
         "fileName": this.fileList[row].fileName
       }
-      axios.post(`//localhost:8080/coursefiles/downloadFile`, formData).then((res) => {
+      axios({
+        method: 'post',
+        url: '//localhost:8080/coursefiles/downloadFile',
+        body: formData,
+      }).then((res) => {
         console.log(res)
+        const data = res.data
+        const url = window.URL.createObjectURL(new Blob([data]))
+        const link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', this.fileList[row].fileName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
         this.fileVisible = false;
       }).catch((res) => {
         console.log(res);
@@ -247,6 +260,16 @@ export default {
         console.log(res)
         if (res.data.success == false) {
           this.fileList = res.data.data;
+          let i = 0;
+          while (i < this.fileList.length) {
+            this.fileList[i].uploadTime = new Date(
+                +new Date(this.fileList[i].uploadTime) + 8 * 60 * 60 * 1000
+            )
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
+            i += 1
+          }
           console.log("file" + res.data)
         }
         this.fileVisible = true;
@@ -290,14 +313,14 @@ export default {
             that.report = res.data.data;
             if (that.report.updateTime == null) {
               that.updateTime = new Date(
-                  +new Date(that.report.submitTime)
+                  +new Date(that.report.submitTime) + 8 * 60 * 60 * 1000
               )
                   .toISOString()
                   .replace(/T/g, " ")
                   .replace(/\.[\d]{3}Z/, "");
             } else {
               that.updateTime = new Date(
-                  +new Date(that.report.updateTime)
+                  +new Date(that.report.updateTime) + 8 * 60 * 60 * 1000
               )
                   .toISOString()
                   .replace(/T/g, " ")
@@ -320,7 +343,13 @@ export default {
         if (res.data.success == true) {
           console.log(res)
           this.report = res.data.data;
-          this.report.name="教师1"
+          this.report.appraiseTime = new Date(
+              +new Date(that.report.appraiseTime) + 8 * 60 * 60 * 1000
+          )
+              .toISOString()
+              .replace(/T/g, " ")
+              .replace(/\.[\d]{3}Z/, "");
+          this.report.name = "教师1"
         }
         console.log(that.report)
       }).catch((res) => {
@@ -403,10 +432,12 @@ export default {
     },
     async feedback() {
       let that = this;
-      axios.get(`//localhost:8080/feedback/add?studentid=` + that.id + "&classid=" + that.classId + "&feedback=" + that.feedbackContent).then((res) => {
+      axios.post(`//localhost:8080/feedback/add?studentid=` + that.id + "&classid=" + that.classId + "&feedback=" + that.feedbackContent).then((res) => {
+        console.log(res)
         if (res.data.success == true) {
           console.log(res)
-          that.experiments = res.data.data;
+          this.$message.success("提交成功！");
+          this.feedbackVisible=false;
         }
       }).catch((res) => {
         console.log(res);

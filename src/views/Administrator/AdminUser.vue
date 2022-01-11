@@ -8,7 +8,7 @@
 
     <el-divider></el-divider>
     <!--        卡片-->
-    <el-card class="box-card">
+    <el-card class="box-card" style="height: 650px;overflow: auto">
       <!--  添加-->
       <el-row :gutter="20">
         <el-col :span="4">
@@ -19,10 +19,9 @@
         </el-col>
       </el-row>
       <!--            学生列表 只展示一些学生信息,详细文本可在详情查看-->
-      <el-table :data="UserList">
+      <el-table :data="examineCurData">
         <el-table-column type="index"></el-table-column>
         <el-table-column label="姓名" prop="name"></el-table-column>
-        <el-table-column label="密码" prop="password"></el-table-column>
         <el-table-column label="角色" prop="roleId"></el-table-column>
         <el-table-column label="邮箱" prop="email"></el-table-column>
         <el-table-column label="显示详情">
@@ -44,17 +43,6 @@
 
       </el-table>
       <br>
-      <!--            分页区域-->
-      <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-sizes="[2, 5, 10]"
-          :page-size.sync="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="examineSearchData.length">
-      </el-pagination>
-    </el-card>
 
     <!--        展示系统公告对话框-->
     <el-dialog ref="showFormRef" :visible.sync="showDialogVisible"
@@ -135,6 +123,17 @@
             <el-button type="success" @click="submit">提交</el-button>
           </span>
     </el-dialog>
+    <!--            分页区域-->
+    <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-sizes="[2, 5]"
+        :page-size.sync="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="examineSearchData.length">
+    </el-pagination>
+    </el-card>
   </div>
 </template>
 
@@ -145,12 +144,13 @@ export default {
   data() {
     return {
       //获取公告列表参数对象
-      query: '',
+      search:"",
+
       //当前的页码
       pageNumber: 1,
       //每页显示的条数
       currentPage:1,
-      pageSize: 10,
+      pageSize: 5,
       content:"",
       goals:"",
 

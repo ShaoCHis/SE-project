@@ -158,6 +158,21 @@ const routes=[
                 path:'TeacherAttendance',
                 name:"teacherAttendance",
                 component:()=>import('../views/teacher/TeacherAttendance')
+            },
+            {
+                path:'GetClass',
+                name:"getClass",
+                component:()=>import('../views/teacher/GetClass')
+            },
+            {
+                path:'ClassReport',
+                name:"classReport",
+                component:()=>import('../views/teacher/ClassReport')
+            },
+            {
+                path:'ClassExperiment',
+                name:"classExperiment",
+                component:()=>import('../views/teacher/ClassExperiment')
             }
         ]
     }

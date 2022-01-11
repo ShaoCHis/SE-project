@@ -17,7 +17,7 @@
         </el-col>
       </el-row>
       <!--            课程列表 只展示一些信息,详细信息可在详情查看-->
-      <el-table :data="courseList">
+      <el-table :data="examineCurData">
         <el-table-column label="课程id" prop="course_id"></el-table-column>
         <el-table-column label="课程名称" prop="name"></el-table-column>
         <el-table-column label="课程简介" prop="intro"></el-table-column>
@@ -67,18 +67,18 @@
       <el-dialog title="课程详情" :visible.sync="showDialogVisible"
                  width="630px" top="60px" center>
         <!--            展示内容主体区域 -->
-        <el-form :model="showForm" label-width="150px" style="height:580px">
+        <el-form :model="showForm" label-width="150px" style="height:380px">
           <el-form-item label="课程名称:">
-            <el-input style="width: 82%;" v-model="showForm.name" readonly="true"></el-input>
+            <el-input style="width: 82%;" v-model="showForm.name" readonly="true" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="课程介绍:">
             <el-input type="textarea"
                       :autosize="{ minRows: 3, maxRows: 4}" style="width: 82%;"
                       v-model="showForm.intro"
-                      readonly="true"></el-input>
+                      readonly="true" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="课程id:">
-            <el-input style="width: 82%;" v-model="showForm.course_id" readonly="true"></el-input>
+            <el-input style="width: 82%;" v-model="showForm.course_id" readonly="true" :disabled="true"></el-input>
           </el-form-item>
 
 
@@ -115,11 +115,11 @@
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="pageNumber"
-          :page-sizes="[1, 2, 5, 10]"
-          :page-size="pageSize"
+          :current-page.sync="currentPage"
+          :page-sizes="[2, 5]"
+          :page-size.sync="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
+          :total="examineSearchData.length">
       </el-pagination>
     </el-card>
   </div>
@@ -140,9 +140,8 @@ export default {
       //当前的页码
       pageNumber: 1,
       //每页显示的条数
+      currentPage:1,
       pageSize: 5,
-      //总条数,用于分页的显示
-      totalCount: 0,
 
       //添加,修改,展示活动对话框的显示与隐藏
       addDialogVisible: false,
@@ -173,6 +172,16 @@ export default {
   created()
   {
     this.getCourseList();
+  },
+  computed:{
+    examineSearchData(){
+      return (this.courseList.filter(data => !this.search ||
+          data.courseId.toLowerCase().includes(this.search.toLowerCase())))
+    },
+    examineCurData:function(){
+      return this.examineSearchData.slice((this.currentPage - 1) * this.pageSize,
+          Math.min(this.currentPage * this.pageSize, this.examineSearchData.length));
+    }
   },
   methods: {
     //获取活动列表

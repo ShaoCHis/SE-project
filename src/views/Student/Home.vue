@@ -23,7 +23,7 @@
                 style="font-size: 20px;margin-top: 20px"
             >
               <i class="el-icon-coffee"></i>
-              <span slot="title">{{ "周"+item.week +":" +item.startTime + "-" + item.endTime }}</span>
+              <span slot="title">{{ "周" + item.week + ":" + item.startTime + "-" + item.endTime }}</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -56,7 +56,7 @@
           </el-aside>
           <el-main style="margin-left: 20px">
             <div>
-                <router-view></router-view>
+              <router-view></router-view>
             </div>
           </el-main>
         </el-container>
@@ -78,12 +78,13 @@ export default {
 
   data() {
     return {
-      id:"",
+      id: "",
       classId: "",
-      userId:"",
-      active:0,
+      userId: "",
+      active: 0,
       isCollapse: true,
-      coursesList: []
+      coursesList: [],
+      email:""
     };
   },
   methods: {
@@ -94,7 +95,7 @@ export default {
       this.classId = key;
       console.log(key, keyPath);
       this.$router.push({
-        name:"studentHome",
+        name: "studentHome",
       })
       this.goNotice()
     },
@@ -125,12 +126,12 @@ export default {
         }
       })
     },
-    goAttendance(){
+    goAttendance() {
       this.$router.push({
-        name:"experimentAttendance",
-        params:{
-          id:this.id,
-          classId:this.classId
+        name: "experimentAttendance",
+        params: {
+          id: this.id,
+          classId: this.classId
         }
       })
     },
@@ -155,25 +156,30 @@ export default {
         that.$message.error("Loading Failed!Please try again!");
       })
     },
-    goExercise(){
+    goExercise() {
       this.$router.push({
-        name:"counteractingExercise",
-        params:{
-          id:this.id
+        name: "counteractingExercise",
+        params: {
+          id: this.id
         }
       })
     },
-    getInfo(){
+    getInfo() {
       axios.get(`//localhost:8080/users/` + this.userId).then((res) => {
         if (res.data.success == true) {
-          if(!res.data.data.activation){
-              this.$message.error("您的账号未激活！");
-              this.$router.push({
-                name: "register",
-                params:{
-                  userId:this.userId
-                }
-              })
+          if (!res.data.data.activation) {
+            this.$message.error("您的账号未激活！");
+            this.$router.push({
+              name: "register",
+              query: {
+                email: this.email,
+                userId:this.userId
+              }
+            })
+          }
+          else {
+            this.getClasses();
+            this.active = "1"
           }
         }
         console.log(res)
@@ -185,12 +191,11 @@ export default {
   },
 
   created() {
-    this.id=this.$route.params.id;
-    this.userId=this.$route.params.userId;
+    this.id = this.$route.params.id;
+    this.userId = this.$route.params.userId;
+    this.email=this.$route.params.email;
     this.getInfo();
-    this.getClasses();
-    this.active="1"
-  },
+  }
 }
 </script>
 

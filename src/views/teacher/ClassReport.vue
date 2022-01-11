@@ -1,13 +1,5 @@
 <template>
   <div style="padding: 20px">
-    <!--        面包屑-->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
-      <el-breadcrumb-item>实验报告查询管理</el-breadcrumb-item>
-    </el-breadcrumb>
-
-    <el-divider></el-divider>
     <el-table :data="tableData"
               stripe
               style="width: 100%"
@@ -18,7 +10,7 @@
       <el-table-column label="批改时间" prop="appraiseTime" />
       <el-table-column label="批改评语"
                        prop="conclusion"
-                       >
+      >
       </el-table-column>
 
       <el-table-column align="right">
@@ -60,7 +52,7 @@
         </el-form-item>
       </el-form>
       <el-input v-model="content" type="textarea"
-             :autosize="{ minRows: 6, maxRows: 7}" placeholder="请输入您的评语" :rows="2" clearable></el-input>
+                :autosize="{ minRows: 6, maxRows: 7}" placeholder="请输入您的评语" :rows="2" clearable></el-input>
       <el-input v-model="goals" placeholder="请输入你的打分"></el-input>
       <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
@@ -85,6 +77,7 @@ export default {
       page: 1,
       currentPage: 1,
       tableData:[],
+      TableData:[],
       keywords: '',
       dialogVisible:false,
       filterDataShow: [],
@@ -108,7 +101,6 @@ export default {
       );
     }
   },
-
   mounted() {
     this.searchResource(); //在页面挂载后调用此方法，确保数据与页面发生了交互
   },
@@ -170,6 +162,19 @@ export default {
           let i=0;
           console.log(this.tableData);
           console.log(this.tableData.length);
+          let j=0;
+          while(i<this.tableData.length)
+          {
+            if(this.tableData[i].eid===this.experimentid) {
+              this.TableData[j] = this.tableData[i];
+              j++;
+            }
+            i++;
+          }
+          console.log(this.TableData);
+          this.TableData.length=j;
+          this.tableData.length=j;
+          this.tableData=this.TableData;
           while (i<this.tableData.length){
             console.log(this.tableData[i].appraiseTime);
             this.tableData[i].appraiseTime = new Date(
@@ -195,6 +200,8 @@ export default {
     }
   },
   created() {
+    this.experimentid=this.$route.params.experimentid;
+    console.log(this.experimentid);
     this.getAll();
   }
 }

@@ -131,7 +131,8 @@ export default {
               name: "studentHome",
               params: {
                 id: res.data.data.specialId,
-                userId:res.data.data.userId
+                userId:res.data.data.userId,
+                email:res.data.data.email
               }
             })
           }
@@ -142,7 +143,11 @@ export default {
             }
           if(res.data.data.roleId==2||res.data.data.roleId==3) {
             this.$router.push({
-              name: "teacherHome"
+              name: "teacherHome",
+              params: {
+                id: res.data.data.specialId,
+                userId:res.data.data.userId
+              }
             })
           }
           this.$message.success("Login Success!Welcome!")

@@ -3,7 +3,7 @@
     <el-row>
       <!--    公告板-->
 
-        <h2 style="font-size: 25px;margin-right: 65%">实验公告</h2>
+        <h2 style="font-size: 25px;margin-right: 65%">系统公告</h2>
         <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh;width: 100%">
           <ul
               class="list"

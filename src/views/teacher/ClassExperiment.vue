@@ -1,21 +1,7 @@
 <template>
   <div>
-    <!--        面包屑-->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/TeacherHome' }">教师首页</el-breadcrumb-item>
-      <el-breadcrumb-item>实验查询与删除</el-breadcrumb-item>
-    </el-breadcrumb>
-
-    <el-divider></el-divider>
     <!--        卡片-->
     <el-card class="box-card">
-      <!--  添加-->
-      <el-row :gutter="20">
-        <el-input  placeholder="请输入课程id" v-model="courseid">
-          <el-button slot="append" icon="el-icon-search" @click="getExperimentList"></el-button>
-        </el-input>
-      </el-row>
       <!--            列表-->
       <el-table :data="examineCurData">
         <el-table-column type="index"></el-table-column>
@@ -99,6 +85,13 @@ export default {
     }
   },
   //一开始就显示公告列表
+  created() {
+    this.classid=this.$route.params.classid;
+    this.courseid=this.$route.params.courseid;
+    console.log(this.classid);
+    console.log(this.courseid);
+    this.getExperimentList();
+  },
   computed: {
     examineSearchData() {
       return (this.ExperimentList.filter(data => !this.search ||
@@ -112,10 +105,11 @@ export default {
   methods: {
     async getExperimentList() {
       let that = this;
-      axios.get(`//localhost:8080/experiments/` + that.courseid).then((res) => {
+      axios.get(`//localhost:8080/reports/getexperimentsofclass/` + this.classid).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.ExperimentList = res.data.data;
+          console.log(that.ExperimentList);
           let i = 0;
           while (i < that.ExperimentList.length) {
             that.ExperimentList[i].uploadTime = new Date(
@@ -161,12 +155,14 @@ export default {
       }
     },
     async readreport(experimentId) {
-            this.$router.push({
-              name: "classReport",
-              params: {
-                id: experimentId,
-              }
-            })
+      console.log(experimentId);
+      this.$router.push({
+        name: "classReport",
+        params: {
+          experimentid: experimentId
+
+        }
+      })
 
     },
   }

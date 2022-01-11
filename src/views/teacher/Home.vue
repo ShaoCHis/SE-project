@@ -9,10 +9,7 @@
                         <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item class="navigation-text" id="username-div">{{name}}</el-dropdown-item>
-            <el-dropdown-item class="navigation-text" @click.native="systemNotice">
-              <el-badge value="new" class="item" :hidden="showDot">系统公告</el-badge>
-            </el-dropdown-item>
+            <el-dropdown-item class="navigation-text" id="username-div">教师ID: {{this.id}}</el-dropdown-item>
             <el-dropdown-item class="navigation-text" id="exit-div" divided @click.native="logout">退出
             </el-dropdown-item>
           </el-dropdown-menu>
@@ -32,7 +29,7 @@
           <el-submenu index="1">
             <template slot="title"><i class="el-icon-menu"></i>实验管理</template>
             <el-menu-item index="ReleaseExperiment" @click="goRelease">发布实验</el-menu-item>
-            <el-menu-item index="SearchExperiment" @click="goSearchExperiment">实验查询</el-menu-item>
+            <el-menu-item index="SearchExperiment" @click="goSearchExperiment">实验查询与删除</el-menu-item>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"><i class="el-icon-s-check"></i>成绩管理</template>
@@ -47,6 +44,7 @@
             <template slot="title"><i class="el-icon-s-check"></i>课程管理</template>
             <el-menu-item index="TeacherCourse" @click="goTeacherCourse">课程创建</el-menu-item>
             <el-menu-item index="TeacherClass" @click="goTeacherClass">班级创建</el-menu-item>
+            <el-menu-item index="GetClass" @click="goGetClass">班级查询</el-menu-item>
           </el-submenu>
           <el-submenu index="5">
             <template slot="title"><i class="el-icon-s-check"></i>考勤管理</template>
@@ -63,6 +61,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data()
   {
@@ -71,7 +71,13 @@ export default {
       name: window.sessionStorage.getItem('name'),
     }
   },
-
+  created() {
+    this.id=this.$route.params.id;
+    this.userId=this.$route.params.userId;
+    this.getInfo();
+    console.log(this.id);
+    console.log(this.userId);
+  },
   mounted()
   {
     this.$nextTick(() =>
@@ -99,53 +105,117 @@ export default {
     {
       this.$router.push({
         name: "homePage",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goRelease()
     {
       this.$router.push({
         name:"releaseExperiment",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goExReport()
     {
       this.$router.push({
         name:"DoexperimentReport",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goTeacherNotice()
     {
       this.$router.push({
         name:"teacherNotice",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goTeacherCourse()
     {
       this.$router.push({
         name:"teacherCourse",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goTeacherClass()
     {
       this.$router.push({
         name:"teacherClass",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goStudentGrade()
     {
       this.$router.push({
         name:"studentGrade",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goSearchExperiment()
     {
       this.$router.push({
         name:"searchExperiment",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
       })
     },
     goTeacherAttendances() {
       this.$router.push({
         name: "teacherAttendance",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
+      })
+    },
+    goGetClass(){
+      this.$router.push({
+        name: "getClass",
+        params: {
+          id: this.id,
+          userId:this.userId
+        }
+      })
+    },
+    getInfo(){
+      axios.get(`//localhost:8080/users/` + this.userId).then((res) => {
+        if (res.data.success == true) {
+          if(!res.data.data.activation){
+            this.$message.error("您的账号未激活！");
+            this.$router.push({
+              name: "register",
+              params:{
+                userId:this.userId
+              }
+            })
+          }
+        }
+        console.log(res)
+      }).catch((res) => {
+        console.log(res);
+        this.$message.error("Loading Failed!Please try again!");
       })
     }
   }

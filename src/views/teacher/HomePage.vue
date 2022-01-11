@@ -3,7 +3,7 @@
     <el-row>
       <!--    公告板-->
 
-      <h2 style="font-size: 25px;margin-right: 65%">实验公告</h2>
+      <h2 style="font-size: 25px;margin-right: 65%">系统公告</h2>
       <div class="infinite-list-wrapper" style="overflow:auto;height: 30vh;width: 100%">
         <ul
             class="list"
@@ -19,12 +19,12 @@
         <p v-if="noMoreSystem">No more</p>
       </div>
     </el-row>
-    <el-divider></el-divider>
+<!--    <el-divider></el-divider>
     <el-row class="new_exp" style="color: #409EFF">
       <el-col :span="24" style="height: fit-content;margin-bottom: 20px">
         <el-card shadow="always" style="width: 200px;color: #409EFF;height: fit-content"> 最近实验</el-card>
       </el-col>
-      <!--      最近实验-->
+      &lt;!&ndash;      最近实验&ndash;&gt;
       <el-col :span="6">
         <el-card class="newExp"
                  :body-style="{ padding: '0px'}" style="width: 250px"
@@ -46,7 +46,7 @@
           </div>
         </el-card>
       </el-col>
-    </el-row>
+    </el-row>-->
   </div>
 
 </template>

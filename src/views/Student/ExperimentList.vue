@@ -8,9 +8,6 @@ Tongji University
 <template>
   <div>
     <div>
-      <div class="block" style="position: absolute;left: 20%;margin-top: 10%">
-        <span style="font-size: 25px">成绩统计</span>
-      </div>
 <!--      <div class="block" id="chartLineBox" style="width: 60%;height: 60vh;left: 0%"></div>-->
     </div>
     <div>
@@ -299,5 +296,6 @@ export default {
 
 .box-card {
   width: 480px;
+  height: 600px;
 }
 </style>
