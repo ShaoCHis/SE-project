@@ -158,19 +158,16 @@ export default {
     goExercise(){
       this.$router.push({
         name:"counteractingExercise",
+        params:{
+          id:this.id
+        }
       })
     },
     getInfo(){
       axios.get(`//localhost:8080/users/` + this.userId).then((res) => {
         if (res.data.success == true) {
           if(!res.data.data.activation){
-              this.$alert(
-                  "您的账号还未激活，请先到登录页面进行激活操作！",
-                  "帮助",
-                  {
-                    confirmButtonText: "确定",
-                  }
-              )
+              this.$message.error("您的账号未激活！");
               this.$router.push({
                 name: "register",
                 params:{

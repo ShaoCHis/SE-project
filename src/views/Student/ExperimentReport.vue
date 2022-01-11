@@ -85,41 +85,43 @@ Tongji University
           :visible.sync="checkVisible"
           width="60%"
           :before-close="handleClose">
-        <el-descriptions title="用户信息" :column="1" border style="width:70%;margin-left:10%;margin-top: 5%;font-size:20px;font-weight: bolder" class="info">
+        <el-descriptions title="用户信息" :column="1" border
+                         style="width:70%;margin-left:10%;margin-top: 5%;font-size:20px;font-weight: bolder"
+                         class="info">
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-files"></i>
               实验报告名
             </template>
-            {{report.title}}
+            {{ report.title }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-scissors"></i>
               实验得分
             </template>
-            {{report.score}}
+            {{ report.score }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-location-outline"></i>
               评语
             </template>
-            {{report.ping_yu}}
+            {{ report.pingYu }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-tickets"></i>
               批改者
             </template>
-            <el-tag>{{report.teacher_or_assistant}}</el-tag>
+            <el-tag>{{ report.name }}</el-tag>
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
               <i class="el-icon-office-building"></i>
               批改时间
             </template>
-            {{report.appraise_time}}
+            {{ report.appraiseTime }}
           </el-descriptions-item>
         </el-descriptions>
       </el-dialog>
@@ -137,49 +139,6 @@ Tongji University
             <el-button @click="feedbackVisible = false">取消</el-button>
             <el-button type="success" @click="feedback">提交</el-button>
           </span>
-      </el-dialog>
-      <el-dialog
-          title="实验反馈"
-          :visible.sync="checkVisible"
-          width="60%"
-          :before-close="handleClose">
-        <el-descriptions title="用户信息" :column="1" border style="width:70%;margin-left:10%;margin-top: 5%;font-size:20px;font-weight: bolder" class="info">
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-files"></i>
-              实验报告名
-            </template>
-            {{report.title}}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-scissors"></i>
-              实验得分
-            </template>
-            {{report.score}}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-location-outline"></i>
-              评语
-            </template>
-            {{report.ping_yu}}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-tickets"></i>
-              批改者
-            </template>
-            <el-tag>{{report.teacher_or_assistant}}</el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <i class="el-icon-office-building"></i>
-              批改时间
-            </template>
-            {{report.appraise_time}}
-          </el-descriptions-item>
-        </el-descriptions>
       </el-dialog>
       <el-dialog
           title="文件列表"
@@ -234,9 +193,9 @@ export default {
 
       //实验报告所需实验Id
       dialogVisible: false,
-      feedbackVisible:false,
-      checkVisible:false,
-      fileVisible:false,
+      feedbackVisible: false,
+      checkVisible: false,
+      fileVisible: false,
       experimentId: "",
 
       color: '#0bbd87',
@@ -251,16 +210,17 @@ export default {
       updateTime: "null",
 
       experiments: [],
-      courseId:"",
+      courseId: "",
 
-      feedbackContent:"",
+      feedbackContent: "",
 
       report: {
         title: "",
         content: "",
-        conclusion: ""
+        conclusion: "",
+        name:""
       },
-      fileList:[]
+      fileList: []
 
     }
   },
@@ -268,28 +228,28 @@ export default {
     handleClick(row) {
       console.log(row);
       console.log(this.fileList[row])
-      let that=this;
+      let that = this;
       let formData = {
-        "courseId":this.courseId,
-        "fileName":this.fileList[row].fileName
+        "courseId": this.courseId,
+        "fileName": this.fileList[row].fileName
       }
-      axios.post(`//localhost:8080/coursefiles/downloadFile`,formData).then((res) => {
+      axios.post(`//localhost:8080/coursefiles/downloadFile`, formData).then((res) => {
         console.log(res)
-        this.fileVisible=false;
+        this.fileVisible = false;
       }).catch((res) => {
         console.log(res);
         that.$message.error("Time out!Please try again!");
       })
     },
-    async getAllFiles(){
-      let that=this;
-      axios.get(`//localhost:8080/coursefiles/`+this.courseId).then((res) => {
+    async getAllFiles() {
+      let that = this;
+      axios.get(`//localhost:8080/coursefiles/` + this.courseId).then((res) => {
         console.log(res)
         if (res.data.success == false) {
-          this.fileList=res.data.data;
-          console.log("file"+res.data)
+          this.fileList = res.data.data;
+          console.log("file" + res.data)
         }
-        this.fileVisible=true;
+        this.fileVisible = true;
         console.log(res)
       }).catch((res) => {
         console.log(res);
@@ -353,30 +313,33 @@ export default {
       this.dialogVisible = true
     },
     async checkReport(value) {
+      this.checkVisible = true
       let that = this;
       that.experimentId = value;
       axios.get(`//localhost:8080/reports/get?experimentid=` + value + "&studentid=" + that.id).then((res) => {
         if (res.data.success == true) {
-          console.log(res);
-          that.report = res.data.data;
-          that.report.appraise_time = new Date(+new Date(that.report.appraise_time))
-              .toISOString()
-              .replace(/T/g, " ")
-              .replace(/\.[\d]{3}Z/, "");
-          that.checkVisible=true;
-        }else {
-          this.$message.warning("老师还未评阅，您无法查看！")
+          console.log(res)
+          this.report = res.data.data;
+          this.report.name="教师1"
         }
         console.log(that.report)
       }).catch((res) => {
         console.log(res);
-        that.$message.error("Time out!Please try again!");
+        that.$message.error("老师还未评阅，您无法查看！");
       })
     },
     handleClose(done) {
       this.$confirm('你确定要关闭吗？该操作将不会保存修改的内容！')
           .then(_ => {
             done();
+            this.report = {
+              title: "",
+              content: "",
+              conclusion: ""
+            }, this.dialogVisible = false;
+            this.feedbackVisible = false;
+            this.checkVisible = false;
+            this.fileVisible = false;
             this.$message.error("保存失败！")
             console.log(_)
           })
@@ -438,10 +401,9 @@ export default {
       await this.getAllFiles();
       console.log("1");
     },
-    async feedback(){
+    async feedback() {
       let that = this;
-      axios.get(`//localhost:8080/feedback/add?studentid=` + that.id+"&classid="+that.classId+"&feedback="+that.feedbackContent).
-      then((res) => {
+      axios.get(`//localhost:8080/feedback/add?studentid=` + that.id + "&classid=" + that.classId + "&feedback=" + that.feedbackContent).then((res) => {
         if (res.data.success == true) {
           console.log(res)
           that.experiments = res.data.data;
@@ -451,7 +413,7 @@ export default {
         that.$message.error("Time out!Please try again!");
       })
     },
-    async getCourse(){
+    async getCourse() {
       let that = this;
       axios.get(`//localhost:8080/classes/getcourse/` + that.classId).then((res) => {
         if (res.data.success == true) {

@@ -117,9 +117,11 @@ export default {
 
     async getIdentification() {
       let that=this;
-      axios.get(`//localhost:8080/mails/sendMail?` + that.userId
+      console.log(that.userId);
+      axios.post(`//localhost:8080/mails/sendMail?userId=` + that.userId
       ).then((res => {
-        if(res.data.data.success==true){
+        console.log(res)
+        if(res.data.success==true){
           this.$message.success(res.data.data.message)
         }
         else{

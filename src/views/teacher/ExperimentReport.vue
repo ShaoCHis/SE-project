@@ -1,40 +1,24 @@
 <template>
   <div style="padding: 20px">
-    <el-table :data="showTable"
+    <el-table :data="tableData"
               stripe
               style="width: 100%"
               :default-sort="{ prop: 'date', order: 'ascending' }"
     >
-      <el-table-column label="学号" prop="stuNum" />
-      <el-table-column label="姓名" prop="name" />
-      <el-table-column
-          label="实验名称"
-          prop="experimentName"
-          sortable
-      />
-      <el-table-column label="提交时间" prop="date" sortable />
-      <el-table-column label="批改状态"
-                       prop="state"
-                       :filters="[
-                        { text: '已批改', value: 1 },
-                        { text: '待批改', value: 0 },
-                        ]"
-                       :filter-method="filterTag"
-      >
-        <!-- eslint-disable-next-line -->
-        <template #default="scope">
-          <div class="el-icon-check" style="margin-left: 15px" v-if="scope.row.state == 1"></div>
-          <div class="el-icon-minus" style="margin-left: 15px" v-else-if="scope.row.state == 0"></div>
-        </template>
+      <el-table-column label="学号" prop="id" />
+      <el-table-column label="实验报告名称" prop="title" />
+      <el-table-column label="批改时间" prop="appraiseTime" />
+      <el-table-column label="批改评语"
+                       prop="conclusion"
+                       >
       </el-table-column>
 
       <el-table-column align="right">
         <template #header>
           <el-input @keyup.enter.native="searchResource" v-model="keywords" size="small" placeholder="搜索"></el-input>
         </template>
-        <template>
-
-          <el-button size="medium" @click="goToRead">查看</el-button>
+        <template slot-scope="index">
+          <el-button size="medium" @click="goToRead(index.$index)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -46,7 +30,36 @@
         @current-change="handleCurrentChange"
         :page-size="pageSize"
         :total="filterDataShow.length">
-    </el-pagination></div>
+    </el-pagination>
+    <el-dialog
+        title="实验报告"
+        :visible.sync="dialogVisible"
+        width="60%"
+        :before-close="handleClose">
+      <el-form :label-position="top" label-width="100px" :model="report">
+        <el-form-item label="实验名称">
+          <el-input v-model="report.title" type="textarea"
+                    :autosize="{minRows:2,maxRows:3}" placeholder="Please input" clearable disabled></el-input>
+        </el-form-item>
+        <el-form-item label="实验内容">
+          <el-input v-model="report.content" type="textarea"
+                    :autosize="{ minRows: 6, maxRows: 7}" placeholder="Please input" clearable
+                    label="report.content" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="实验结论">
+          <el-input v-model="report.conclusion" type="textarea"
+                    :autosize="{ minRows: 6, maxRows: 7}" placeholder="Please input" :rows="2" clearable disabled></el-input>
+        </el-form-item>
+      </el-form>
+      <el-input v-model="content" type="textarea"
+             :autosize="{ minRows: 6, maxRows: 7}" placeholder="请输入您的评语" :rows="2" clearable></el-input>
+      <el-input v-model="goals" placeholder="请输入你的打分"></el-input>
+      <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="success" @click="submit(report.id)">提交</el-button>
+          </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -65,7 +78,16 @@ export default {
       currentPage: 1,
       tableData:[],
       keywords: '',
+      dialogVisible:false,
       filterDataShow: [],
+      report: {
+        id:"",
+        title: "",
+        content: "",
+        conclusion: ""
+      },
+      content:"",
+      goals:"",
     }
   },
 
@@ -90,10 +112,13 @@ export default {
     }
   },
   methods: {
-    goToRead(){
-      this.$router.push({
-        name:"readReport"
-      })
+    goToRead(index){
+      console.log(index)
+      this.report.title=this.tableData[index].title
+      this.report.content=this.tableData[index].content
+      this.report.conclusion=this.tableData[index].conclusion
+      this.report.id=this.tableData[index].eid;
+      this.dialogVisible=true;
     },
     searchResource() {
       this.currentPage = 1; //将当前页设置为1，确保每次都是从第一页开始搜
@@ -129,7 +154,39 @@ export default {
         that.$message.error("Time out!Please try again!");
       })
     },
+    getAll(){
+      axios.get(`//localhost:8080/reports/all`).then((res)=>{
+        console.log(res)
+        if(res.data.success==true){
+          this.tableData=res.data.data;
+          let i=0;
+          while (i<this.tableData.length){
+            console.log(this.tableData[i].appraiseTime);
+            this.tableData[i].appraiseTime = new Date(
+                +new Date(this.tableData[i].appraiseTime)+ 8 * 3600 * 1000
+            )
+                .toISOString()
+                .replace(/T/g, " ")
+                .replace(/\.[\d]{3}Z/, "");
+            i+=1;
+          }
+          console.log(this.tableData)
+        }
+      })
+    },
+    submit(index){
+      axios.post(`//localhost:8080/reports/appraisebyte?reportid=`+index+"&score="+this.goals+"&pingyu="+this.content+"&teacherid=1").then((res)=>{
+        console.log(res)
+        if(res.data.success==true){
+          console.log(this.tableData)
+          this.dialogVisible=false;
+        }
+      })
+    }
   },
+  created() {
+    this.getAll();
+  }
 }
 </script>
 <style>

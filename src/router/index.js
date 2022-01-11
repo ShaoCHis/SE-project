@@ -49,6 +49,11 @@ const routes=[
                 path:'ExperimentAttendance',
                 name:"experimentAttendance",
                 component:()=>import('../views/Student/ExperimentAttendance')
+            },
+            {
+                path:'CounteractingExercise',
+                name:'counteractingExercise',
+                component:()=>import('../views/Student/CounteractingExercise')
             }
         ]
     },

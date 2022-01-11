@@ -11,14 +11,14 @@ Tongji University
       <div class="block" style="position: absolute;left: 20%;margin-top: 10%">
         <span style="font-size: 25px">成绩统计</span>
       </div>
-      <div class="block" id="chartLineBox" style="width: 60%;height: 60vh;left: 0%"></div>
+<!--      <div class="block" id="chartLineBox" style="width: 60%;height: 60vh;left: 0%"></div>-->
     </div>
     <div>
       <el-table
           :data="experiments"
           :row-class-name="tableRowClassName"
           border
-          height="270"
+          height="750"
           style="width: 100%;font-weight: bolder;font-size: 15px;row-class-name:tableRowClassName">
         <el-table-column
             fixed
@@ -42,7 +42,7 @@ Tongji University
             width="200">
           <template slot-scope="index">
             <el-button @click="handleClick(index.$index)" type="text" size="small">查看实验内容</el-button>
-            <el-button type="text" size="small" disabled>编辑</el-button>
+            <el-button type="text" size="small" @click="deleteB(index.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -61,7 +61,10 @@ export default {
       id: "",
       classId: "",
       experiments: [],
-      courserId:""
+      courserId:"",
+      meanScore:[],
+      myScore:[],
+      name:[],
     }
   },
   methods: {
@@ -109,7 +112,12 @@ export default {
     async getExperimentsGradeMean(){
       let that = this;
       axios.get(`//localhost:8080/grades/experimentmeanscore/` + that.classId).then((res) => {
+        console.log(res)
         if (res.data.success == true) {
+          let i=0;
+          while(i<res.data.data.length){
+            this.meanScore[i]=res.data.data[i].meanScore;
+          }
           console.log(res)
         }
       }).catch((res) => {
@@ -121,9 +129,9 @@ export default {
     async getCourse(){
       let that = this;
       axios.get(`//localhost:8080/classes/getcourse/` + that.classId).then((res) => {
+        console.log(res)
         if (res.data.success == true) {
           that.courserId = res.data.data.courserId;
-          console.log(res)
         }
       }).catch((res) => {
         console.log(res);
@@ -131,11 +139,39 @@ export default {
       })
     },
     //再把得到的成绩放进图表进行显示
+
     async getExperimentsGrade(){
       let that = this;
       axios.get(`//localhost:8080/reports/?studentid=`+that.id+"&courseid=" + that.courserId).then((res) => {
+        console.log(res)
+        if (res.data.success == true) {
+          let i=0;
+          while(i<res.data.data.length){
+            this.myScore[i]=res.data.data[i].score;
+            i+=1
+          }
+          let j=0;
+          while (j<this.experiments.length){
+            this.name[j]=this.experiments[j].score;
+            j+=1
+          }
+          console.log(res)
+        }
+      }).catch((res) => {
+        console.log(res);
+        that.$message.error("Time out!Please try again!");
+      })
+    },
+    async deleteB(index){
+      let that = this;
+      console.log(index)
+      axios.delete(`//localhost:8080/experiments/`+this.experiments[index].experimentId).then((res) => {
         if (res.data.success == true) {
           console.log(res)
+          this.$message.success(res.data.data)
+        }
+        else {
+          this.$message.error(res.data.message)
         }
       }).catch((res) => {
         console.log(res);
@@ -158,7 +194,7 @@ export default {
       xAxis: {                //设置x轴
         type: 'category',
         boundaryGap: false,     //坐标轴两边不留白
-        data: ['放大镜', '2019-2-1', '2019-3-1', '2019-4-1', '2019-5-1', '2019-6-1', '2019-7-1',],
+        data: this.name,
         name: '实验',           //X轴 name
         nameTextStyle: {        //坐标轴名称的文字样式
           color: '#FA6F53',
@@ -188,7 +224,7 @@ export default {
       series: [
         {
           name: '平均成绩',
-          data: [220, 232, 201, 234, 290, 230, 220],
+          data: this.meanScore,
           type: 'line',               // 类型为折线图
           lineStyle: {                // 线条样式 => 必须使用normal属性
             normal: {
@@ -198,7 +234,7 @@ export default {
         },
         {
           name: '学生成绩',
-          data: [120, 200, 150, 80, 70, 110, 130],
+          data: this.myScore,
           type: 'line',
           lineStyle: {
             normal: {
@@ -217,7 +253,8 @@ export default {
     this.classId = this.$route.params.classId;
     this.getCourse();
     this.getExperiments();
-    this.getExperimentsGradeMean();
+    // this.getExperimentsGradeMean();
+    // this.getExperimentsGrade();
   },
   watch: {
     '$route.params.classId'() {

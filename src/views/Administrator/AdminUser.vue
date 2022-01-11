@@ -14,6 +14,9 @@
         <el-col :span="4">
           <el-button type="primary" @click="showAddUser">添加用户</el-button>
         </el-col>
+        <el-col span="4">
+          <el-button type="primary" @click="delevery">分配权限</el-button>
+        </el-col>
       </el-row>
       <!--            学生列表 只展示一些学生信息,详细文本可在详情查看-->
       <el-table :data="UserList">
@@ -119,6 +122,19 @@
                         <el-button type="primary" @click="editAnnouncement">确 定</el-button>
                 </span>
         </el-dialog>-->
+    <el-dialog
+        title="分配权限"
+        :visible.sync="visible"
+        width="60%"
+        :before-close="handleClose">
+      <el-input v-model="content" type="textarea"
+                :autosize="{ minRows: 6, maxRows: 7}" placeholder="请输入其对应用户id" :rows="2" clearable></el-input>
+      <el-input v-model="goals" placeholder="请输入权限："></el-input>
+      <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button type="success" @click="submit">提交</el-button>
+          </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -135,6 +151,8 @@ export default {
       //每页显示的条数
       currentPage:1,
       pageSize: 10,
+      content:"",
+      goals:"",
 
       //查询到的当页公告
       UserList: [],
@@ -153,7 +171,8 @@ export default {
         email:"",
       },
       //添加公告的校验规则
-      addFormRules: {}
+      addFormRules: {},
+      visible:false,
     }
   },
   //一开始就显示公告列表
@@ -171,6 +190,34 @@ export default {
     }
   },
   methods: {
+    delevery(){
+      this.visible=true;
+    },
+    submit(){
+      let permission=[];
+      let i=0;
+      axios.get(`//localhost:8080/permissions/`+this.content).then((res) => {
+        console.log(res);
+        console.log(res.data.data)
+        console.log(res.data.data.length)
+        while (i<res.data.data.length){
+          permission[i]=res.data.data[i].permissionId
+          i+=1
+        }
+        // permission[i]=14
+        let body={
+          "permissionIDList":permission
+        }
+        axios.post(`//localhost:8080/permissions/`+this.content,body).then((res)=>{
+          console.log(res)
+          if(res.data.success==true){
+            this.visible=false;
+            this.$message.success("分配权限成功！");
+          }
+        })
+        console.log(permission)
+      }).catch();
+    },
     async getUserList() {
       let that = this;
       axios.get(`//localhost:8080/users`).then((res) => {

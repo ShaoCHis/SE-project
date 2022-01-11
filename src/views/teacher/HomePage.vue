@@ -108,7 +108,7 @@ export default {
     },
     async getSystemNotices() {
       let that = this;
-      axios.get(`//139.224.65.154:8080/sysnotices`).then((res) => {
+      axios.get(`//localhost:8080/sysnotices`).then((res) => {
         if (res.data.success == true) {
           that.systemNotices = res.data.data;
         }

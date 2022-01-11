@@ -18,7 +18,7 @@
       </el-row>
       <!--            课程列表 只展示一些信息,详细信息可在详情查看-->
       <el-table :data="courseList">
-        <el-table-column type="index"></el-table-column>
+        <el-table-column label="课程id" prop="course_id"></el-table-column>
         <el-table-column label="课程名称" prop="name"></el-table-column>
         <el-table-column label="课程简介" prop="intro"></el-table-column>
         <el-table-column label="显示详情">
@@ -221,7 +221,7 @@ export default {
       let body={
         "courseName":that.addForm.coursename,
         "intro":that.addForm.intro,
-        "administratorId":3
+        "administratorId":1
       }
       axios.post("//localhost:8080/courses/add",body ).then((res) => {
         //隐藏添加公告对话框

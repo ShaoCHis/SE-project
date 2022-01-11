@@ -108,19 +108,23 @@ export default {
   },
 
   methods: {
-    submitForm()
+    async submitForm()
     {
       let that = this;
-      axios.post("//localhost:8080/experiments/add?courseid=" + that.form.courseid + "&experimentname" + that.form.experimentname + "&intro=" + that.form.intro).then((res) => {
+      console.log(that.form)
+      let body={
+        courseId:that.form.courseid,
+        experimentName:that.form.experimentname,
+        intro:that.form.intro
+      }
+      console.log(body)
+      axios.post("//localhost:8080/experiments/add",body).then((res) => {
         //隐藏添加公告对话框
         this.addDialogVisible = false;
         console.log(res);
         if(res.data.success!=true)
           return this.$message.error('增加失败！');
         this.$message.info("添加成功!");
-      }).catch((res) => {
-        console.log(res);
-        that.$message.error("Time out!Please try again!");
       })
     },
   },
